@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker — Web Wireframe</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ AUTH OVERLAY ============ -->
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-brand"><div class="logo">৳</div><div><strong>ExpenseTracker</strong><span>Personal finance, minus the chaos</span></div></div>
+    <div class="auth-tabs"><button class="auth-tab active" data-authtab="login">Log in</button><button class="auth-tab" data-authtab="register">Register</button></div>
+
+    <form id="loginForm" class="auth-form active" onsubmit="return enterApp(event)">
+      <label>Email<input type="email" value="rafi@example.com" required></label>
+      <label>Password<input type="password" value="password123" required><small>JWT access (short-lived) + refresh rotation. 401 on bad token.</small></label>
+      <div class="form-error hidden" id="loginError">Invalid email or password.</div>
+      <button class="btn primary lg" type="submit">Log in →</button>
+      <p class="muted center">Demo: any input works. Click Log in to enter.</p>
+    </form>
+
+    <form id="registerForm" class="auth-form" onsubmit="return enterApp(event)">
+      <label>Full name<input type="text" value="Rafi Ahmed" required></label>
+      <label>Email<input type="email" value="rafi@example.com" required><small>Duplicate email → 400. Case-normalized.</small></label>
+      <label>Password<input type="password" value="password123" required minlength="8"><small>Hashed with Django. Min 8 chars.</small></label>
+      <button class="btn primary lg" type="submit">Create account</button>
+    </form>
+    <div class="auth-foot">API: <code>POST /api/auth/register/</code> · <code>POST /api/auth/login/</code> · <code>POST /api/auth/token/refresh/</code></div>
+  </div>
+</div>
+
+<div class="app hidden" id="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">৳</div><div><strong>ExpenseTracker</strong><span>MVP · BDT</span></div></div>
+    <nav>
+      <button class="nav-item active" data-screen="dashboard"><span class="ico">◧</span>Dashboard</button>
+      <button class="nav-item" data-screen="transactions"><span class="ico">⇄</span>Transactions<span class="count">24</span></button>
+      <button class="nav-item" data-screen="categories"><span class="ico">▦</span>Categories</button>
+      <button class="nav-item" data-screen="budgets"><span class="ico">◐</span>Budgets</button>
+      <button class="nav-item" data-screen="reports"><span class="ico">▤</span>Reports</button>
+      <button class="nav-item" data-screen="profile"><span class="ico">○</span>Profile</button>
+    </nav>
+    <div class="side-card">
+      <strong>Overall budget · Oct</strong>
+      <div class="progress"><i style="width:88%"></i></div>
+      <small>৳30,850 / ৳35,000 · 88%</small>
+      <button class="btn ghost sm" data-goto="budgets">View budgets</button>
+    </div>
+    <div class="user-card"><div class="avatar">R</div><div><strong>Rafi Ahmed</strong><span>rafi@example.com</span></div><button title="Logout" onclick="logout()">⏻</button></div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <div class="month-picker"><button onclick="changeMonth(-1)">‹</button><div><strong id="monthLabel">October 2026</strong><span id="monthSub">month=2026-10 · calendar-date inclusive</span></div><button onclick="changeMonth(1)">›</button></div>
+      <div class="top-actions">
+        <div class="search"><span>⌕</span><input id="globalSearch" placeholder="Search description, category…" oninput="filterTxns()"></div>
+        <button class="btn ghost" data-goto="categories">+ Category</button>
+        <button class="btn ghost" data-goto="budgets">+ Budget</button>
+        <button class="btn primary" onclick="openTxnModal()">+ Add transaction</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- ===== DASHBOARD ===== -->
+      <section id="screen-dashboard" class="screen active">
+        <div class="page-head"><div><h1>Good evening, Rafi 👋</h1><p>Salary ৳45,000 tracked · Food budget ৳8,000 · <span class="pill warn">1 budget near limit</span></p></div><button class="btn secondary" data-goto="reports">View full report →</button></div>
+        <div class="kpis">
+          <div class="kpi"><span class="kpi-label">Total income</span><strong class="green">৳45,000.00</strong><small>↑ 2 txn · Salary + Freelance</small></div>
+          <div class="kpi"><span class="kpi-label">Total expenses</span><strong class="red">৳30,850.00</strong><small>22 txn · Rent is 49%</small></div>
+          <div class="kpi highlight"><span class="kpi-label">Net balance (income − expenses)</span><strong>৳14,150.00</strong><small>Monthly net, not lifetime cash</small></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h3>Budget status</h3><button class="link" data-goto="budgets">Manage →</button></div>
+            <div class="budget-row"><div class="b-top"><strong>Food</strong><span>৳7,250 / ৳8,000</span></div><div class="progress warn"><i style="width:91%"></i></div><small class="warn-t">91% · ৳750 left</small></div>
+            <div class="budget-row"><div class="b-top"><strong>Transport</strong><span>৳3,200 / ৳5,000</span></div><div class="progress ok"><i style="width:64%"></i></div><small>64% · ৳1,800 left</small></div>
+            <div class="budget-row"><div class="b-top"><strong>Shopping</strong><span>৳5,400 / ৳6,000</span></div><div class="progress warn"><i style="width:90%"></i></div><small class="warn-t">90% · ৳600 left</small></div>
+            <div class="budget-row over"><div class="b-top"><strong>Overall</strong><span>৳30,850 / ৳35,000</span></div><div class="progress"><i style="width:88%"></i></div><small>88% · on track</small></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Spending by category</h3><span class="muted">type=expense</span></div>
+            <div class="bar-row"><span>Rent</span><div class="hbar"><i style="width:100%"></i></div><strong>৳15,000</strong></div>
+            <div class="bar-row"><span>Food</span><div class="hbar"><i style="width:48%"></i></div><strong>৳7,250</strong></div>
+            <div class="bar-row"><span>Shopping</span><div class="hbar"><i style="width:36%"></i></div><strong>৳5,400</strong></div>
+            <div class="bar-row"><span>Transport</span><div class="hbar"><i style="width:21%"></i></div><strong>৳3,200</strong></div>
+            <div class="note">DB aggregation · no per-category N+1 · <code>GET /api/reports/category-breakdown/</code></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Recent transactions</h3><button class="link" data-goto="transactions">View all →</button></div>
+          <table class="table"><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th class="r">Amount</th></tr></thead>
+          <tbody id="recentBody"></tbody></table>
+        </div>
+      </section>
+
+      <!-- ===== TRANSACTIONS ===== -->
+      <section id="screen-transactions" class="screen">
+        <div class="page-head"><div><h1>Transactions</h1><p>Owner-scoped · decimal strings · <code>GET /api/transactions/?type=&amp;category_id=&amp;start_date=&amp;end_date=</code></p></div><button class="btn primary" onclick="openTxnModal()">+ Add transaction</button></div>
+        <div class="card filters">
+          <div class="seg" id="typeSeg"><button class="active" data-t="all">All</button><button data-t="income">Income</button><button data-t="expense">Expense</button></div>
+          <select id="fCategory" onchange="filterTxns()"><option value="">All categories</option></select>
+          <input type="date" id="fStart" value="2026-10-01" onchange="filterTxns()"><span class="muted">→</span><input type="date" id="fEnd" value="2026-10-31" onchange="filterTxns()">
+          <button class="btn ghost sm" onclick="resetFilters()">Reset</button>
+        </div>
+        <div class="card pad0">
+          <table class="table"><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th class="r">Amount (BDT)</th><th></th></tr></thead><tbody id="txnBody"></tbody></table>
+          <div class="empty hidden" id="txnEmpty"><div class="empty-ico">∅</div><strong>No transactions found</strong><p>Try widening the date range or clearing filters.</p><button class="btn primary sm" onclick="openTxnModal()">+ Add transaction</button></div>
+          <div class="pager"><span id="txnCount">10 of 24</span><div><button class="btn ghost sm" disabled>‹ Prev</button><button class="btn ghost sm">1</button><button class="btn ghost sm">2</button><button class="btn ghost sm">Next ›</button></div></div>
+        </div>
+      </section>
+
+      <!-- ===== CATEGORIES ===== -->
+      <section id="screen-categories" class="screen">
+        <div class="page-head"><div><h1>Categories</h1><p>Type must match transaction type · duplicates blocked per user+type</p></div><button class="btn primary" onclick="openCatModal()">+ New category</button></div>
+        <div class="seg" id="catSeg"><button class="active" data-c="all">All (9)</button><button data-c="income">Income (3)</button><button data-c="expense">Expense (6)</button></div>
+        <div class="cat-grid" id="catGrid"></div>
+        <div class="card warn-card"><strong>⚠ Deletion policy (FR-CAT-06):</strong><span> Categories with transactions can't be hard-deleted. Wireframe shows blocked state — choose block / soft-delete / reassign before build.</span></div>
+      </section>
+
+      <!-- ===== BUDGETS ===== -->
+      <section id="screen-budgets" class="screen">
+        <div class="page-head"><div><h1>Budgets — <span id="budgetMonth">2026-10</span></h1><p>Unique per user+month+scope · spent derived from expense txns · over-budget never blocks txns</p></div><button class="btn primary" onclick="openBudgetModal()">+ New budget</button></div>
+        <div class="budget-grid" id="budgetGrid"></div>
+        <div class="card"><div class="card-head"><h3>How remaining works</h3></div><p class="muted"><code>remaining = limit − spent</code> · negative = over budget · deleting a budget never deletes transactions.</p></div>
+      </section>
+
+      <!-- ===== REPORTS ===== -->
+      <section id="screen-reports" class="screen">
+        <div class="page-head"><div><h1>Reports</h1><p>User-scoped · month boundaries inclusive · empty month returns zeros</p></div><div class="seg"><button class="active">Monthly</button><button onclick="toast('Wireframe: yearly view is P2')">Yearly</button></div></div>
+        <div class="kpis">
+          <div class="kpi"><span class="kpi-label">Income · <code>monthly-summary</code></span><strong class="green">৳45,000.00</strong></div>
+          <div class="kpi"><span class="kpi-label">Expenses</span><strong class="red">৳30,850.00</strong></div>
+          <div class="kpi highlight"><span class="kpi-label">Net</span><strong>৳14,150.00</strong></div>
+          <div class="kpi"><span class="kpi-label">Budgets over</span><strong class="red">0 of 4</strong><small>1 near limit</small></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-head"><h3>Category breakdown</h3><div class="seg sm"><button class="active">Expense</button><button onclick="toast('Wireframe: income breakdown parallel')">Income</button></div></div><div id="reportBars"></div></div>
+          <div class="card"><div class="card-head"><h3>Budget status · <code>budget-status/?month=2026-10</code></h3></div><table class="table"><thead><tr><th>Budget</th><th class="r">Limit</th><th class="r">Spent</th><th class="r">Remaining</th><th>Status</th></tr></thead><tbody id="reportBudgetBody"></tbody></table></div>
+        </div>
+        <div class="card empty-demo"><strong>Empty-month behavior (FR-REP-05):</strong><span> switch topbar to November → income ৳0, expenses ৳0, net ৳0, no error.</span><button class="btn ghost sm" onclick="changeMonth(1)">Preview Nov (empty) →</button></div>
+      </section>
+
+      <!-- ===== PROFILE ===== -->
+      <section id="screen-profile" class="screen">
+        <div class="page-head"><div><h1>Profile</h1><p><code>GET /api/auth/me/</code> · refresh rotation · logout blacklists refresh</p></div></div>
+        <div class="grid-2">
+          <div class="card"><div class="card-head"><h3>Account</h3><span class="pill ok">Verified</span></div>
+            <div class="profile-row"><div class="avatar lg">R</div><div><strong>Rafi Ahmed</strong><p class="muted">rafi@example.com · joined Oct 2026</p></div></div>
+            <label>Display name<input value="Rafi Ahmed"></label>
+            <label>Default currency<input value="BDT — Bangladeshi Taka" disabled></label>
+            <button class="btn secondary" onclick="toast('Profile saved (wireframe)')">Save changes</button>
+          </div>
+          <div class="card"><div class="card-head"><h3>Sessions &amp; security</h3></div>
+            <div class="sess"><div><strong>This device — Chrome/Windows</strong><small>Access expires in 14 min · refresh rotates</small></div><span class="pill ok">Current</span></div>
+            <div class="sess"><div><strong>Phone — Android</strong><small>Last active 2h ago</small></div><button class="btn ghost sm" onclick="toast('Refresh revoked (wireframe)')">Revoke</button></div>
+            <button class="btn danger" onclick="logout()">Log out (blacklist refresh)</button>
+            <div class="note">Access tokens usable until expiry. Client clears storage on logout.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+<div class="modal-backdrop hidden" id="txnModal"><div class="modal">
+  <div class="modal-head"><h3 id="txnModalTitle">Add transaction</h3><button onclick="closeModals()">✕</button></div>
+  <div class="seg" id="txnTypeSeg"><button class="active" data-tt="expense">Expense</button><button data-tt="income">Income</button></div>
+  <div class="grid-2 sm">
+    <label>Amount (BDT) *<input id="txnAmount" type="number" min="0.01" step="0.01" placeholder="0.00"><small class="err hidden" id="amtErr">Amount must be &gt; 0. Stored as Decimal, sent as string.</small></label>
+    <label>Date *<input id="txnDate" type="date" value="2026-10-20"></label>
+  </div>
+  <label>Category *<select id="txnCategory"></select><small>Filtered by type — mismatch → 400 (FR-CAT-05).</small></label>
+  <label>Description (optional)<input id="txnDesc" maxlength="255" placeholder="e.g. Lunch at Shad’s"><small class="r" id="descCount">0 / 255</small></label>
+  <div class="modal-foot"><button class="btn ghost" onclick="closeModals()">Cancel</button><button class="btn primary" onclick="saveTxn()">Save transaction</button></div>
+</div></div>
+
+<div class="modal-backdrop hidden" id="catModal"><div class="modal sm">
+  <div class="modal-head"><h3>New category</h3><button onclick="closeModals()">✕</button></div>
+  <label>Name *<input id="catName" placeholder="e.g. Groceries"></label>
+  <div class="seg"><button class="active">Expense</button><button onclick="toast('Wireframe: type toggle')">Income</button></div>
+  <div class="form-error hidden">A category with this name already exists for this type.</div>
+  <div class="modal-foot"><button class="btn ghost" onclick="closeModals()">Cancel</button><button class="btn primary" onclick="closeModals();toast('Category created (wireframe)')">Create</button></div>
+</div></div>
+
+<div class="modal-backdrop hidden" id="budgetModal"><div class="modal sm">
+  <div class="modal-head"><h3>New budget</h3><button onclick="closeModals()">✕</button></div>
+  <div class="grid-2 sm"><label>Month *<input type="month" value="2026-10"></label><label>Limit (BDT) *<input type="number" value="8000" min="0.01" step="0.01"></label></div>
+  <label>Category (empty = Overall budget)<select><option value="">Overall — all expenses</option><option selected>Food (expense)</option><option>Transport (expense)</option><option>Shopping (expense)</option></select></label>
+  <div class="form-error hidden">Duplicate: one budget per user + month + scope (DB unique).</div>
+  <div class="modal-foot"><button class="btn ghost" onclick="closeModals()">Cancel</button><button class="btn primary" onclick="closeModals();toast('Budget created (wireframe)')">Create</button></div>
+</div></div>
+
+<div class="modal-backdrop hidden" id="deleteModal"><div class="modal sm center">
+  <div class="del-ico">🗑</div><h3>Delete transaction?</h3><p class="muted">“Lunch — ৳350” will be removed. Summaries &amp; budgets recalculate instantly.</p>
+  <div class="modal-foot center"><button class="btn ghost" onclick="closeModals()">Keep</button><button class="btn danger" onclick="closeModals();toast('Transaction deleted — reports updated')">Delete</button></div>
+</div></div>
+
+<div class="toast hidden" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

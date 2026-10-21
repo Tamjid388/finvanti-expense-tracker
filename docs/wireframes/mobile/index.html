@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker — Mobile Wireframe</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="stage">
+  <div class="stage-copy">
+    <div class="brandmark">৳</div>
+    <h1>Expense Tracker<br><span>Mobile wireframe · v2</span></h1>
+    <p>De-slopped per <b>design-review</b> + <b>design-html</b>: no gradients, no emoji icons, no ring carousel. Solid tokens, SVG icons, date-grouped lists, attention-first home.</p>
+    <ul>
+      <li>Auth → labeled fields, JWT + refresh notes</li>
+      <li>Home → balance, cash-flow bar, needs-attention, recent by date</li>
+      <li>Txns → search + chips with counts, grouped rows</li>
+      <li>Add sheet → labeled amount, type-match categories, validation</li>
+      <li>Budgets → remaining-first rows · Reports · Profile</li>
+    </ul>
+    <p class="muted">API parity: <code>/transactions/</code> <code>/budgets/</code> <code>/reports/</code> · BDT · empty month → zeros.</p>
+  </div>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="phone-screen">
+
+      <!-- AUTH -->
+      <div class="m-screen active" id="m-auth">
+        <div class="m-auth">
+          <div class="brandmark">৳</div>
+          <div class="auth-copy"><h2>Know where your taka goes</h2><p>Salary, food, rent. One private ledger with monthly budgets.</p></div>
+          <div class="seg" role="tablist"><button class="active" data-ma="login">Log in</button><button data-ma="register">Register</button></div>
+          <div id="ma-login" class="m-form">
+            <label>Email<input type="email" value="rafi@example.com" autocomplete="email"></label>
+            <label>Password<input type="password" value="password123" autocomplete="current-password"></label>
+            <button class="btn primary xl" onclick="mGo('home')">Log in</button>
+            <p class="hint">Demo: any input works. Access 15 min, refresh rotates.</p>
+          </div>
+          <div id="ma-register" class="m-form hidden">
+            <label>Full name<input value="Rafi Ahmed" autocomplete="name"></label>
+            <label>Email<input type="email" value="rafi@example.com" autocomplete="email"></label>
+            <label>Password<input type="password" value="password123" autocomplete="new-password"><span class="hint">Min 8 chars, hashed by Django. Duplicate email → 400.</span></label>
+            <button class="btn primary xl" onclick="mGo('home')">Create account</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOME -->
+      <div class="m-screen" id="m-home">
+        <div class="m-head">
+          <div class="month-step"><button aria-label="Previous month" onclick="toast('Sep 2026 — empty month, zeros')">‹</button><div><span class="eyebrow">October 2026</span><h2>Hello, Rafi</h2></div><button aria-label="Next month" onclick="toast('Nov 2026 — empty month, zeros')">›</button></div>
+          <div class="avatar" aria-label="Profile">R</div>
+        </div>
+
+        <div class="balance-card">
+          <span class="eyebrow light">Net balance · income minus expenses</span>
+          <strong class="balance">৳14,150.00</strong>
+          <div class="flow" aria-hidden="true"><i class="in" style="width:59%"></i><i class="out" style="width:41%"></i></div>
+          <div class="flow-legend"><span><i class="dot in"></i>In ৳45,000</span><span><i class="dot out"></i>Out ৳30,850</span><span class="pct">69% spent</span></div>
+        </div>
+
+        <div class="sec-row"><h3>Needs attention</h3><button class="link" onclick="mGo('budgets')">All budgets</button></div>
+        <div class="attention">
+          <button class="att-row" onclick="mGo('budgets')"><span class="cdot food"></span><span class="att-main"><strong>Food</strong><small>৳7,250 of ৳8,000 · ৳750 left</small></span><span class="meter"><i style="width:91%"></i></span><span class="pill warn">91%</span></button>
+          <button class="att-row" onclick="mGo('budgets')"><span class="cdot shopping"></span><span class="att-main"><strong>Shopping</strong><small>৳5,400 of ৳6,000 · ৳600 left</small></span><span class="meter"><i style="width:90%"></i></span><span class="pill warn">90%</span></button>
+        </div>
+
+        <div class="sec-row"><h3>Recent</h3><button class="link" onclick="mGo('txns')">View all</button></div>
+        <div id="mRecent"></div>
+        <div class="pad"></div>
+      </div>
+
+      <!-- TXNS -->
+      <div class="m-screen" id="m-txns">
+        <div class="m-head"><div><span class="eyebrow">October · 24 records</span><h2>Transactions</h2></div><button class="icon-btn" aria-label="Date range" onclick="toast('Date range: 2026-10-01 → 2026-10-31')">Cal</button></div>
+        <label class="m-search"><span aria-hidden="true">⌕</span><input id="mQ" placeholder="Search description or category" oninput="renderMobile()"></label>
+        <div class="chips" id="mChips"><button class="active" data-mt="all">All · 7</button><button data-mt="income">Income · 2</button><button data-mt="expense">Expense · 5</button></div>
+        <div id="mTxns"></div>
+        <div class="pad"></div>
+      </div>
+
+      <!-- BUDGETS -->
+      <div class="m-screen" id="m-budgets">
+        <div class="m-head"><div><span class="eyebrow">month = 2026-10</span><h2>Budgets</h2></div><button class="btn primary sm" onclick="openSheet('budgetSheet')">New</button></div>
+        <div class="overall"><div><span class="eyebrow">Overall spending</span><strong>৳30,850 <span>of ৳35,000</span></strong></div><span class="pill ok">88% · on track</span></div>
+        <div class="meter big"><i style="width:88%"></i></div>
+        <div id="mBudgets"></div>
+        <p class="foot-note">Remaining = limit − spent. Negative means over. Deleting a budget never deletes transactions.</p>
+        <div class="pad"></div>
+      </div>
+
+      <!-- MORE -->
+      <div class="m-screen" id="m-more">
+        <div class="profile-row"><div class="avatar lg">R</div><div><strong>Rafi Ahmed</strong><p>rafi@example.com</p></div></div>
+        <div class="menu">
+          <button onclick="mGo('reports')"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Reports &amp; breakdown<em>›</em></button>
+          <button onclick="mGo('cats')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Categories · 9<em>›</em></button>
+          <button onclick="mGo('profile')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Profile &amp; sessions<em>›</em></button>
+          <button onclick="toast('OpenAPI / Swagger (wireframe)')"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>API docs<em>›</em></button>
+        </div>
+        <div class="summary"><span class="eyebrow">October summary</span><div class="sum-grid"><div><small>Income</small><b class="inc">৳45,000</b></div><div><small>Expenses</small><b class="exp">৳30,850</b></div><div><small>Net</small><b>৳14,150</b></div></div></div>
+        <button class="btn danger xl" onclick="location.reload()">Log out</button>
+        <div class="pad"></div>
+      </div>
+
+      <!-- CATS -->
+      <div class="m-screen" id="m-cats">
+        <div class="m-head"><button class="icon-btn" aria-label="Back" onclick="mGo('more')">‹</button><h2>Categories</h2><button class="btn primary sm" onclick="toast('New category (wireframe)')">New</button></div>
+        <div class="chips"><button class="active">All · 9</button><button>Income · 3</button><button>Expense · 6</button></div>
+        <div id="mCats"></div>
+        <p class="foot-note">Type must match the transaction. Names are unique per user + type.</p>
+        <div class="pad"></div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="m-screen" id="m-reports">
+        <div class="m-head"><button class="icon-btn" aria-label="Back" onclick="mGo('more')">‹</button><h2>Reports · Oct</h2></div>
+        <div class="rep-card"><span class="eyebrow light">Net · ৳45,000 in, ৳30,850 out</span><strong class="balance sm">৳14,150.00</strong><div class="flow"><i class="in" style="width:59%"></i><i class="out" style="width:41%"></i></div></div>
+        <h3>Where it went</h3>
+        <div id="mBars"></div>
+        <h3>Budget status</h3>
+        <div id="mRepBudgets"></div>
+        <div class="pad"></div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="m-screen" id="m-profile">
+        <div class="m-head"><button class="icon-btn" aria-label="Back" onclick="mGo('more')">‹</button><h2>Profile</h2></div>
+        <div class="profile-row"><div class="avatar lg">R</div><div><strong>Rafi Ahmed</strong><p>rafi@example.com · joined Oct 2026</p></div></div>
+        <label>Display name<input value="Rafi Ahmed"></label>
+        <label>Currency<input value="BDT — Bangladeshi Taka" disabled></label>
+        <div class="session"><div><strong>This device</strong><small>Access expires in 14 min · refresh rotates</small></div><span class="pill ok">Current</span></div>
+        <button class="btn ink xl" onclick="toast('Saved (wireframe)')">Save changes</button>
+        <div class="pad"></div>
+      </div>
+
+      <!-- TAB BAR -->
+      <nav class="tabbar hidden" id="tabbar" aria-label="Primary">
+        <button class="active" data-tab="home" onclick="mGo('home')"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><small>Home</small></button>
+        <button data-tab="txns" onclick="mGo('txns')"><svg viewBox="0 0 24 24"><path d="M4 7h13l-3-3M20 17H7l3 3"/></svg><small>Txns</small></button>
+        <button class="fab" aria-label="Add transaction" onclick="openSheet('txnSheet')"><span>+</span><small>Add</small></button>
+        <button data-tab="budgets" onclick="mGo('budgets')"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M12 3v9h9"/></svg><small>Budgets</small></button>
+        <button data-tab="more" onclick="mGo('more')"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><small>More</small></button>
+      </nav>
+
+      <!-- SHEETS -->
+      <div class="sheet-back hidden" id="txnSheet"><div class="sheet" role="dialog" aria-label="New transaction">
+        <div class="grab"></div><h3>New transaction</h3>
+        <div class="seg"><button class="active" data-st="expense">Expense</button><button data-st="income">Income</button></div>
+        <label>Amount (BDT)<span class="amt-wrap"><em>৳</em><input id="mAmt" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00"></span><span class="hint" id="mAmtHint">Must be greater than 0. Stored as Decimal, sent as a string.</span></label>
+        <div class="two"><label>Category<select id="mCat"></select></label><label>Date<input type="date" value="2026-10-20"></label></div>
+        <label>Note (optional)<input id="mNote" maxlength="255" placeholder="e.g. Lunch near office"></label>
+        <p class="hint">Category type must match transaction type, or the API returns 400.</p>
+        <button class="btn primary xl" onclick="saveMobileTxn()">Save transaction</button>
+        <button class="btn ghost xl" onclick="closeSheets()">Cancel</button>
+      </div></div>
+      <div class="sheet-back hidden" id="budgetSheet"><div class="sheet" role="dialog" aria-label="New budget">
+        <div class="grab"></div><h3>New budget</h3>
+        <div class="two"><label>Month<input type="month" value="2026-10"></label><label>Limit (BDT)<input type="number" value="8000" min="0.01" step="0.01"></label></div>
+        <label>Category<select><option value="">Overall — all expenses</option><option selected>Food (expense)</option><option>Transport (expense)</option><option>Shopping (expense)</option></select><span class="hint">One budget per month + scope. Duplicates are blocked.</span></label>
+        <button class="btn primary xl" onclick="closeSheets();toast('Budget created (wireframe)')">Create budget</button>
+        <button class="btn ghost xl" onclick="closeSheets()">Cancel</button>
+      </div></div>
+      <div class="toast hidden" id="mToast" role="status"></div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
