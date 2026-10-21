@@ -1,12 +1,5 @@
-/**
- * HTTP client for the Django REST API (JWT).
- *
- * Contract (client/AGENTS.md + prd.md §12):
- * - Every request carries `Authorization: Bearer <access>`.
- * - On 401: attempt ONE token refresh, retry the original request once; if that
- *   fails, clear the in-memory session and force login. Never loop on 401.
- * - 204 = success with no body. 400 = per-field validation errors.
- */
+/** HTTP client for the Django REST API (JWT) — axios edition. */
+import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
 
 import { API_BASE_URL } from "@/config/env";
 import { ROUTES } from "@/config/routes";
@@ -33,98 +26,129 @@ export type RequestInit = {
   params?: QueryParams;
 };
 
+/** Raw axios instance — prefer the typed `api` wrapper below for backend calls. */
+export const http: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: { Accept: "application/json" },
+  timeout: 15_000,
+});
+
+const REFRESH_PATH = "/api/auth/token/refresh/";
+const RETRY_FLAG = "__isRetry";
+
+/** Single-flight refresh: parallel 401s share one refresh POST. */
+let refreshPromise: Promise<boolean> | null = null;
+
+http.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  // The refresh call authenticates with the refresh token in the body — no Bearer.
+  const isRefreshCall = typeof config.url === "string" && config.url.includes(REFRESH_PATH);
+  if (!isRefreshCall) {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      config.headers.set("Authorization", `Bearer ${accessToken}`);
+    }
+  }
+  return config;
+});
+
+http.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const config = error.config as (InternalAxiosRequestConfig & { [RETRY_FLAG]?: boolean }) | undefined;
+    const status = error.response?.status;
+    const isRefreshCall =
+      typeof config?.url === "string" && config.url.includes(REFRESH_PATH);
+
+    if (status === 401 && config && !config[RETRY_FLAG] && !isRefreshCall && getRefreshToken()) {
+      config[RETRY_FLAG] = true;
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        return http.request(config);
+      }
+      // Refresh failed: session is dead. Full reload is intentional — the
+      // in-memory session is gone, and /login is the only valid screen.
+      clearSession();
+      redirectToLogin();
+    }
+    return Promise.reject(error);
+  },
+);
+
 export const api = {
   get: <T>(path: string, params?: QueryParams) => request<T>(path, { method: "GET", params }),
-  /** POST normally creates — the API answers 201 with the created resource. */
   post: <T>(path: string, body?: unknown) => request<T>(path, { method: "POST", body }),
   patch: <T>(path: string, body?: unknown) => request<T>(path, { method: "PATCH", body }),
-  /** DELETE answers 204 (no body) — call as `api.del<void>(…)`. */
   del: <T = void>(path: string) => request<T>(path, { method: "DELETE" }),
 };
 
-async function request<T>(path: string, options: RequestInit & { isRetry?: boolean }): Promise<T> {
-  const { method = "GET", body, params, isRetry = false } = options;
-  const headers = new Headers({ Accept: "application/json" });
-  if (body !== undefined) {
-    headers.set("Content-Type", "application/json");
-  }
-  const accessToken = getAccessToken();
-  if (accessToken) {
-    headers.set("Authorization", `Bearer ${accessToken}`);
-  }
-
-  let response: Response;
+async function request<T>(path: string, options: RequestInit): Promise<T> {
+  const { method = "GET", body, params } = options;
   try {
-    response = await fetch(buildUrl(path, params), {
+    const response = await http.request<T>({
+      url: path,
       method,
-      headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      params: cleanParams(params),
+      // axios sets Content-Type for objects; set it only when a body is present.
+      ...(body === undefined
+        ? {}
+        : { data: body, headers: { "Content-Type": "application/json" } }),
     });
-  } catch {
-    throw new ApiError(0, "Network error — is the API server running?");
-  }
-
-  if (response.status === 204) {
-    return undefined as T;
-  }
-
-  if (response.status === 401 && !isRetry && getRefreshToken()) {
-    const refreshed = await refreshAccessToken();
-    if (refreshed) {
-      // Refresh succeeded — retry the original request exactly once.
-      return request<T>(path, { ...options, isRetry: true });
+    // 204 normalizes to empty data.
+    if (response.status === 204) {
+      return undefined as T;
     }
-    // Refresh failed: session is dead. Full reload is intentional — the
-    // in-memory session is gone, and /login is the only valid screen.
-    clearSession();
-    redirectToLogin();
-    throw new ApiError(401, "Your session expired. Please sign in again.");
+    // Void callers (delete) may get 200 + null.
+    if (response.data === undefined || response.data === null || response.data === "") {
+      return undefined as T;
+    }
+    return response.data;
+  } catch (error) {
+    throw toApiError(error);
   }
-
-  if (!response.ok) {
-    const { message, fieldErrors } = await parseError(response);
-    throw new ApiError(response.status, message, fieldErrors);
-  }
-
-  return (await response.json()) as T;
 }
 
-/* ------------------------------- internals -------------------------------- */
+/* --------------------------------- internals --------------------------------- */
 
-// (path always starts with "/api/…" and ends with "/" — DRF trailing-slash discipline)
-function buildUrl(path: string, params?: QueryParams): string {
-  if (!params) return `${API_BASE_URL}${path}`;
-  const search = new URLSearchParams();
+// DRF trailing-slash discipline: paths start with "/api/…" and end with "/".
+function cleanParams(params?: QueryParams): QueryParams | undefined {
+  if (!params) return undefined;
+  const out: QueryParams = {};
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null && value !== "") {
-      search.set(key, String(value));
+      out[key] = value;
     }
   }
-  const qs = search.toString();
-  return qs ? `${API_BASE_URL}${path}?${qs}` : `${API_BASE_URL}${path}`;
+  return out;
 }
 
-async function refreshAccessToken(): Promise<boolean> {
-  const refreshToken = getRefreshToken();
-  if (!refreshToken) {
-    return false;
-  }
-  try {
-    // Raw fetch on purpose: this must NOT recurse through the 401 handler.
-    const response = await fetch(`${API_BASE_URL}/api/auth/token/refresh/`, {
-      method: "POST",
-      headers: { Accept: "application/json", "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh: refreshToken }),
-    });
-    if (!response.ok) {
-      return false;
+function refreshAccessToken(): Promise<boolean> {
+  if (!refreshPromise) {
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      return Promise.resolve(false);
     }
-    const data = (await response.json()) as TokenRefreshResponse;
-    setTokens(data); // rotation returns a NEW refresh token — store the fresh pair
-    return true;
-  } catch {
-    return false;
+    // Flagged so the interceptor never refreshes-the-refresh on a 401 here.
+    refreshPromise = http
+      .post<TokenRefreshResponse>(
+        REFRESH_PATH,
+        { refresh: refreshToken },
+        {
+          headers: { Accept: "application/json", "Content-Type": "application/json" },
+          // Reuse the retry flag slot so the interceptor skips this call.
+          [RETRY_FLAG]: true,
+        } as Record<string, unknown>,
+      )
+      .then((response) => {
+        // Rotation returns a NEW refresh token — store the fresh pair.
+        setTokens(response.data);
+        return true;
+      })
+      .catch(() => false)
+      .finally(() => {
+        refreshPromise = null;
+      });
   }
+  return refreshPromise;
 }
 
 function redirectToLogin(): void {
@@ -132,16 +156,28 @@ function redirectToLogin(): void {
   window.location.assign(`${ROUTES.login}?next=${next}`);
 }
 
-async function parseError(
-  response: Response,
-): Promise<{ message: string; fieldErrors: FieldErrors | null }> {
-  let payload: unknown = null;
-  try {
-    payload = await response.json();
-  } catch {
-    // No body (e.g. bare 429/5xx) — fall through to status copy.
+function toApiError(error: unknown): ApiError {
+  if (axios.isAxiosError(error)) {
+    const status = error.response?.status;
+    if (status === undefined) {
+      return new ApiError(0, "Couldn't reach the server. Check your connection and try again.");
+    }
+    // Interceptor already cleared the session + redirected; surface a message
+    // so TanStack Query hooks render the right state.
+    if (status === 401) {
+      const { message } = parseErrorPayload(error.response?.data, status);
+      return new ApiError(401, message, null);
+    }
+    const { message, fieldErrors } = parseErrorPayload(error.response?.data, status);
+    return new ApiError(status, message, fieldErrors);
   }
+  return new ApiError(0, "Couldn't reach the server. Check your connection and try again.");
+}
 
+function parseErrorPayload(
+  payload: unknown,
+  status: number,
+): { message: string; fieldErrors: FieldErrors | null } {
   if (typeof payload === "object" && payload !== null && !Array.isArray(payload)) {
     const record = payload as Record<string, unknown>;
     const detail = typeof record.detail === "string" ? record.detail : undefined;
@@ -157,6 +193,10 @@ async function parseError(
     }
   }
 
+  if (typeof payload === "string" && payload.length > 0) {
+    return { message: payload, fieldErrors: null };
+  }
+
   const fallbackByStatus: Record<number, string> = {
     400: "Invalid input.",
     401: "Not authenticated.",
@@ -165,12 +205,11 @@ async function parseError(
     429: "Too many requests — take a moment and try again.",
     500: "Server error — try again later.",
   };
-  const generic =
-    fallbackByStatus[response.status] ?? `Request failed (HTTP ${response.status}).`;
+  const generic = fallbackByStatus[status] ?? `Request failed (HTTP ${status}).`;
   return { message: generic, fieldErrors: null };
 }
 
-/** DRF field errors: `{ field: ["msg"] }` — show them under the matching inputs. */
+/** DRF field errors: `{ field: ["msg"] }`. */
 function extractFieldErrors(payload: Record<string, unknown>): FieldErrors | null {
   const out: FieldErrors = {};
   for (const [key, value] of Object.entries(payload)) {

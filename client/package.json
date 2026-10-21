@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "gen:api": "npx -p openapi-typescript@latest -p typescript@5 openapi-typescript ../server/schema.yml -o src/api/schema.d.ts",
     "typecheck": "tsc -b"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
     "@tanstack/react-query": "^5.104.5",
+    "axios": "^1.20.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cn": "^0.5.0",
