@@ -1,6 +1,6 @@
 # SPEC T2: Transaction CRUD + Filters + Pagination
 
-> Parent: `docs/epics/transactions.md`. Depends on T1. Status: spec only.
+> Parent: `docs/epics/transactions.md`. Depends on T1. Status: implemented 2026-10-21.
 > Implements FR-TXN-01/07/08/10, routes `prd.md:155-163`.
 
 ## Context

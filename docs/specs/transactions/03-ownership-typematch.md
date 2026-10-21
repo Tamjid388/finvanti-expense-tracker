@@ -1,6 +1,6 @@
 # SPEC T3: Ownership + Type-Match + Date Guards
 
-> Parent: `docs/epics/transactions.md`. Depends on T2 + Categories C3. Status: spec only.
+> Parent: `docs/epics/transactions.md`. Depends on T2 + Categories C3. Status: implemented 2026-10-21.
 > Implements FR-TXN-05/06. Rules: `server/AGENTS.md` 404 concealment.
 
 ## Context

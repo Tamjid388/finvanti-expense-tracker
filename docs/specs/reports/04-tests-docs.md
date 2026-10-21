@@ -1,6 +1,6 @@
 # SPEC R4: Report Tests + Boundaries + Schema
 
-> Parent: `docs/epics/reports.md`. Depends on R1–R3. Status: spec only.
+> Parent: `docs/epics/reports.md`. Depends on R1–R3. Status: implemented 2026-10-21.
 > Implements PRD §14 for reports + §6.6.
 
 ## Context

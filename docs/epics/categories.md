@@ -1,6 +1,6 @@
 # Epic: Categories — User-Owned Income/Expense Types
 
-> Status: spec only, no code changed.
+> Status: Done 2026-10-21 - implemented, 100-test suite green, live QA 71/71 PASS (server/.gstack/qa-reports/run-20261021-functional/qa-report-api-2026-10-21.md).
 > Source of truth: `prd.md` §6.2, §7–§9, §13–§15. Backend rules: `server/AGENTS.md`.
 > Decisions locked 2026-10-21 via `/spec` D1–D4 (block-delete, user-owned only, CI-unique 100 chars, single epic + PATCH).
 

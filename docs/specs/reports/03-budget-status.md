@@ -1,6 +1,6 @@
 # SPEC R3: Budget Status Join
 
-> Parent: `docs/epics/reports.md`. Depends on Budgets B3. Status: spec only.
+> Parent: `docs/epics/reports.md`. Depends on Budgets B3. Status: implemented 2026-10-21.
 > Implements FR-REP-04 (+06/07 reuse).
 
 ## Context

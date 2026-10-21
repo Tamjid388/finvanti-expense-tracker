@@ -1,6 +1,6 @@
 # SPEC R2: Category Breakdown Grouping
 
-> Parent: `docs/epics/reports.md`. Depends on T3. Status: spec only.
+> Parent: `docs/epics/reports.md`. Depends on T3. Status: implemented 2026-10-21.
 > Implements FR-REP-03/07.
 
 ## Context

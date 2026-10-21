@@ -1,6 +1,6 @@
 # SPEC B2: Budget CRUD + Month Filter
 
-> Parent: `docs/epics/budgets.md`. Depends on B1. Status: spec only.
+> Parent: `docs/epics/budgets.md`. Depends on B1. Status: implemented 2026-10-21.
 > Implements FR-BUD-01/02/03/05/09, routes `prd.md:165-173`.
 
 ## Context

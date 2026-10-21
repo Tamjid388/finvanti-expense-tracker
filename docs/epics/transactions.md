@@ -1,6 +1,6 @@
 # Epic: Transactions — User-Owned Income/Expense Records
 
-> Status: spec only, no code changed.
+> Status: Done 2026-10-21 - implemented, 100-test suite green, live QA 71/71 PASS (server/.gstack/qa-reports/run-20261021-functional/qa-report-api-2026-10-21.md).
 > Source: `prd.md` §6.3, §7–§9, §13–§15. Backend rules: `server/AGENTS.md`.
 > Depends on: `docs/epics/categories.md` (FK target + type-match contract).
 

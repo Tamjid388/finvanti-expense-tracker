@@ -1,6 +1,6 @@
 # SPEC R1: Monthly Summary Aggregation + Bounds
 
-> Parent: `docs/epics/reports.md`. Depends on Transactions T3. Status: spec only.
+> Parent: `docs/epics/reports.md`. Depends on Transactions T3. Status: implemented 2026-10-21.
 > Implements FR-REP-01/02/05/06/08 for summary.
 
 ## Context

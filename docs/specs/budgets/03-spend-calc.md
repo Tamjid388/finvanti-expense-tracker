@@ -1,6 +1,6 @@
 # SPEC B3: Spend / Remaining Calculation + Guards
 
-> Parent: `docs/epics/budgets.md`. Depends on B2 + Transactions T3. Status: spec only.
+> Parent: `docs/epics/budgets.md`. Depends on B2 + Transactions T3. Status: implemented 2026-10-21.
 > Implements FR-BUD-06/07/08.
 
 ## Context

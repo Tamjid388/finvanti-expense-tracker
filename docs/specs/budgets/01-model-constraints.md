@@ -1,6 +1,6 @@
 # SPEC B1: Budget Model + Null-Unique + Migration
 
-> Parent: `docs/epics/budgets.md`. Depends on Categories C1 + Transactions T1. Status: spec only.
+> Parent: `docs/epics/budgets.md`. Depends on Categories C1 + Transactions T1. Status: implemented 2026-10-21.
 > Implements `prd.md:212-219`, FR-BUD-02/04.
 
 ## Context

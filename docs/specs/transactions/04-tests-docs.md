@@ -1,6 +1,6 @@
 # SPEC T4: Transaction Tests + schema.yml
 
-> Parent: `docs/epics/transactions.md`. Depends on T2+T3. Status: spec only.
+> Parent: `docs/epics/transactions.md`. Depends on T2+T3. Status: implemented 2026-10-21.
 > Implements PRD §14 for txns + §6.6 docs.
 
 ## Context

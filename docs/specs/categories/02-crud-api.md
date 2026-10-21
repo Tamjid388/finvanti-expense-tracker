@@ -1,6 +1,6 @@
 # SPEC C2: Category Serializers + CRUD + Filter
 
-> Parent: `docs/epics/categories.md`. Stories S1/S2/S3. Depends on `01-model-constraints.md`. Status: spec only.
+> Parent: `docs/epics/categories.md`. Stories S1/S2/S3. Depends on `01-model-constraints.md`. Status: implemented 2026-10-21.
 > Implements FR-CAT-01/02/03/04, routes `prd.md:147-154`. Rules: `server/AGENTS.md`.
 
 ## Context

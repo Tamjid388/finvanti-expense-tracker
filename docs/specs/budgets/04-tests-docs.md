@@ -1,6 +1,6 @@
 # SPEC B4: Budget Tests + schema.yml
 
-> Parent: `docs/epics/budgets.md`. Depends on B2+B3. Status: spec only.
+> Parent: `docs/epics/budgets.md`. Depends on B2+B3. Status: implemented 2026-10-21.
 > Implements PRD §14 for budgets + §6.6.
 
 ## Context

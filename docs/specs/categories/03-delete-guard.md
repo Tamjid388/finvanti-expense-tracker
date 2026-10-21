@@ -1,6 +1,6 @@
 # SPEC C3: Block-Delete Guard + Type-Change Guard
 
-> Parent: `docs/epics/categories.md`. Stories S4/S5. Depends on `02-crud-api.md`. Status: spec only.
+> Parent: `docs/epics/categories.md`. Stories S4/S5. Depends on `02-crud-api.md`. Status: implemented 2026-10-21.
 > Implements FR-CAT-05/06 per D1. Rules: `server/AGENTS.md`.
 
 ## Context

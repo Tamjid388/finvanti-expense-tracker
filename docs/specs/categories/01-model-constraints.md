@@ -1,6 +1,6 @@
 # SPEC C1: Category Model + Constraints + Migration
 
-> Parent: `docs/epics/categories.md`. Stories S6, partly S3. Status: spec only, no code.
+> Parent: `docs/epics/categories.md`. Stories S6, partly S3. Status: implemented 2026-10-21.
 > Implements `prd.md:191-198`, FR-CAT-02/04/07. Rules: `server/AGENTS.md` Conventions.
 
 ## Context

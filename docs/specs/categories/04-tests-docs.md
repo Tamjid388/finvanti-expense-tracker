@@ -1,6 +1,6 @@
 # SPEC C4: Category Tests + schema.yml + Docs Sync
 
-> Parent: `docs/epics/categories.md`. Covers all stories S1–S6 verification. Depends on C2+C3. Status: spec only.
+> Parent: `docs/epics/categories.md`. Covers all stories S1–S6 verification. Depends on C2+C3. Status: implemented 2026-10-21.
 > Implements PRD §14 test contract for categories, §6.6 docs. Rules: `server/AGENTS.md` Testing.
 
 ## Context

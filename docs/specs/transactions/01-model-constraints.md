@@ -1,6 +1,6 @@
 # SPEC T1: Transaction Model + Constraints + Migration
 
-> Parent: `docs/epics/transactions.md`. Depends on Categories C1. Status: spec only.
+> Parent: `docs/epics/transactions.md`. Depends on Categories C1. Status: implemented 2026-10-21.
 > Implements `prd.md:200-210`, FR-TXN-02/03/04. Rules: `server/AGENTS.md`.
 
 ## Context
