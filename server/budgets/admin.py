@@ -1,0 +1,10 @@
+from django.contrib import admin
+
+from .models import Budget
+
+
+@admin.register(Budget)
+class BudgetAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "month", "category", "limit_amount")
+    list_filter = ("month",)
+    ordering = ("user", "month")
