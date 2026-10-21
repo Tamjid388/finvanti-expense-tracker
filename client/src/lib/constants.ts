@@ -1,6 +1,6 @@
 import type { TxnType } from "@/types/api";
 
-export const APP_NAME = "Expense Tracker";
+export const APP_NAME = "ExpenseTracker";
 /** BDT only for the MVP — no conversion (PRD §4 non-goal). */
 export const CURRENCY_SYMBOL = "৳";
 

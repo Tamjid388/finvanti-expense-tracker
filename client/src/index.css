@@ -49,38 +49,39 @@
 }
 
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    /* Palette mapped from docs/wireframes/web/styles.css (UI reference). */
+    --background: #ffffff;
+    --foreground: #111827; /* --ink */
+    --card: #ffffff;
+    --card-foreground: #111827;
+    --popover: #ffffff;
+    --popover-foreground: #111827;
+    --primary: #4f46e5; /* --pri (buttons, active states, avatars) */
+    --primary-foreground: #ffffff;
+    --secondary: #f3f4f6; /* .auth-tabs / .seg track */
+    --secondary-foreground: #111827;
+    --muted: #f1f5f9; /* .progress track */
+    --muted-foreground: #6b7280; /* --mut */
+    --accent: #eef2ff; /* .pill.info / code bg */
+    --accent-foreground: #3730a3;
+    --destructive: #dc2626; /* --red */
+    --border: #e5e7eb; /* --line */
+    --input: #e5e7eb;
+    --ring: #c7d2fe; /* input:focus outline */
+    --chart-1: #4f46e5; /* primary bars */
+    --chart-2: #06b6d4; /* .hbar gradient end */
+    --chart-3: #16a34a; /* --grn income */
+    --chart-4: #d97706; /* --warn */
+    --chart-5: #dc2626; /* --red */
+    --radius: 0.625rem; /* 10px buttons; xl=14px matches --r cards */
+    --sidebar: #0f172a; /* .sidebar */
+    --sidebar-foreground: #cbd5e1;
+    --sidebar-primary: #1d4ed8; /* wireframe .nav-item.active (unused — AppShell sidebar active item uses the neutral white/5 style) */
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #1e293b; /* .nav-item:hover / side cards */
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #334155;
+    --sidebar-ring: #c7d2fe;
 }
 
 .dark {
@@ -90,8 +91,8 @@
     --card-foreground: oklch(0.985 0 0);
     --popover: oklch(0.205 0 0);
     --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
+    --primary: #6366f1; /* indigo-500 only, so dark-mode buttons stay brand-colored */
+    --primary-foreground: #ffffff;
     --secondary: oklch(0.269 0 0);
     --secondary-foreground: oklch(0.985 0 0);
     --muted: oklch(0.269 0 0);
@@ -127,4 +128,18 @@
   html {
     @apply font-sans;
     }
+}
+
+/* Auth screens backdrop (login + register) — dark navy with soft indigo/pink
+   glows. Written as real CSS because the multi-layer background shorthand
+   with a color fallback cannot be expressed as a single Tailwind `bg-[…]`
+   arbitrary value in v4. Glows scale with the viewport so laptops get the
+   same look as phones instead of a mostly-empty navy field. */
+@layer utilities {
+  .auth-backdrop {
+    background-color: #0f172a;
+    background-image:
+      radial-gradient(70vw 60vh at 20% -10%, #c7d2fe, transparent),
+      radial-gradient(55vw 55vh at 90% 110%, #fbcfe8, transparent);
+  }
 }

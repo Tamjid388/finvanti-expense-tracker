@@ -30,7 +30,7 @@ export function ErrorState({
       <p className="font-medium">{title}</p>
       {description ? <p className="max-w-md text-sm text-destructive/90">{description}</p> : null}
       {onRetry ? (
-        <Button variant="outline" size="sm" onClick={onRetry}>
+        <Button variant="outline" onClick={onRetry}>
           Try again
         </Button>
       ) : null}
