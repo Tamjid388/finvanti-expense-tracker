@@ -1,7 +1,5 @@
 import type { QueryParams } from "@/api/client";
-import type { BudgetFilters } from "@/api/budgets";
-import type { TransactionFilters } from "@/api/transactions";
-import type { TxnType } from "@/types/api";
+import type { BudgetFilters, TransactionFilters, TxnType } from "@/types/api";
 
 /**
  * Central query-key factory (ARCHITECTURE.md §6). Mutations invalidate by the
