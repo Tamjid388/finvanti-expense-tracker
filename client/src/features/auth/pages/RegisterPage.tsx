@@ -38,26 +38,39 @@ export function RegisterPage() {
     register.mutate({ username, email, password });
   };
 
-  const message =
-    register.error instanceof ApiError
-      ? register.error.message
-      : "Registration failed — please try again.";
+  const apiError = register.error instanceof ApiError ? register.error : null;
+  const isConnectionError = apiError?.status === 0;
+  const message = !apiError
+    ? "Registration failed — please try again."
+    : isConnectionError
+      ? apiError.message
+      : (apiError.fieldErrors && Object.values(apiError.fieldErrors)[0]) || apiError.message;
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-muted/30 p-4">
-      <Card className="w-full max-w-sm">
+    <div className="auth-backdrop flex min-h-dvh flex-col p-4">
+      <Card className="m-auto w-full max-w-sm">
         <CardHeader>
           <CardTitle>Create your {APP_NAME} account</CardTitle>
           <CardDescription>One account keeps every record private to you.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <Alert className="border-dashed">
-            <AlertTitle>Backend not connected</AlertTitle>
-            <AlertDescription>
-              Start the API first: <code className="text-xs">python manage.py runserver</code> in{" "}
-              <code className="text-xs">server/</code>.
-            </AlertDescription>
-          </Alert>
+          {register.isError ? (
+            <Alert variant="destructive">
+              <AlertTitle>Registration failed</AlertTitle>
+              <AlertDescription>
+                {message}
+                {isConnectionError && import.meta.env.DEV ? (
+                  <>
+                    <br />
+                    <span className="text-xs opacity-80">
+                      Dev hint: start the API with <code>python manage.py runserver</code> in{" "}
+                      <code>server/</code>.
+                    </span>
+                  </>
+                ) : null}
+              </AlertDescription>
+            </Alert>
+          ) : null}
 
           <form className="grid gap-4" onSubmit={handleSubmit}>
             <div className="grid gap-2">
@@ -112,8 +125,6 @@ export function RegisterPage() {
               {register.isPending ? "Creating account…" : "Create account"}
             </Button>
           </form>
-
-          {register.isError ? <p className="text-sm text-destructive">{message}</p> : null}
         </CardContent>
       </Card>
     </div>

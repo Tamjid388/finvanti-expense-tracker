@@ -5,6 +5,7 @@ import { authApi } from "@/api/auth";
 import { qk } from "@/api/query-keys";
 import { ROUTES } from "@/config/routes";
 import { clearSession, setUser, setTokens } from "../session";
+import { toast } from "@/components/shared/Toaster";
 import type { LoginPayload, RegisterPayload } from "@/types/api";
 
 /** Hydrates the shell/profile with the access-token user (cached under qk.me). */
@@ -37,6 +38,7 @@ export function useLogin() {
       const from = (location.state as { from?: { pathname?: string } } | null)?.from;
       const target =
         from?.pathname && from.pathname !== ROUTES.login ? from.pathname : ROUTES.dashboard;
+      toast("Logged in — access 15m, refresh rotates");
       navigate(target, { replace: true });
     },
   });
