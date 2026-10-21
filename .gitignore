@@ -72,3 +72,9 @@ $RECYCLE.BIN/
 # ---------- AI agent / tooling artifacts ----------
 .claude/settings.local.json
 *.session.json
+
+# Host-local mirrors of the vendored gstack skill library.
+# The canonical copy is tracked at .agents/skills/gstack/; these two are
+# recreated per machine by the gstack setup script.
+.claude/skills/
+agent/
