@@ -1,0 +1,12 @@
+{
+  "status": 200,
+  "body": {
+    "id": 2,
+    "category": 1,
+    "month": "2026-10-01",
+    "limit_amount": "50.00",
+    "spent": "40.00",
+    "remaining": "10.00",
+    "is_over": false
+  }
+}

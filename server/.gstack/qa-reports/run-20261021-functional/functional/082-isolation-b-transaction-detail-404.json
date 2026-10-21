@@ -1,0 +1,6 @@
+{
+  "status": 404,
+  "body": {
+    "detail": "No Transaction matches the given query."
+  }
+}

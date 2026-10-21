@@ -1,0 +1,8 @@
+{
+  "status": 400,
+  "body": {
+    "month": [
+      "Invalid month. Use YYYY-MM."
+    ]
+  }
+}

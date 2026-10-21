@@ -1,0 +1,10 @@
+{
+  "status": 401,
+  "body": {
+    "GET /api/transactions/": 401,
+    "POST /api/transactions/": 401,
+    "GET /api/transactions/1/": 401,
+    "PATCH /api/transactions/1/": 401,
+    "DELETE /api/transactions/1/": 401
+  }
+}

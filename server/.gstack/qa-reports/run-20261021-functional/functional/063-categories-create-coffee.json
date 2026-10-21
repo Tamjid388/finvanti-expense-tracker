@@ -1,0 +1,10 @@
+{
+  "status": 201,
+  "body": {
+    "id": 5,
+    "name": "Coffee",
+    "type": "expense",
+    "created_at": "2026-10-21T11:51:28.241880Z",
+    "updated_at": "2026-10-21T11:51:28.241898Z"
+  }
+}

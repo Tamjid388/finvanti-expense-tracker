@@ -1,0 +1,13 @@
+{
+  "status": 201,
+  "body": {
+    "id": 5,
+    "category": 5,
+    "amount": "5.00",
+    "type": "expense",
+    "date": "2026-10-21",
+    "description": "",
+    "created_at": "2026-10-21T11:51:28.933114Z",
+    "updated_at": "2026-10-21T11:51:28.933122Z"
+  }
+}

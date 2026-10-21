@@ -1,0 +1,12 @@
+{
+  "status": 400,
+  "body": {
+    "code": "category_in_use",
+    "detail": "Category has transactions and cannot be deleted.",
+    "fields": {
+      "id": [
+        "Category is referenced by transactions."
+      ]
+    }
+  }
+}

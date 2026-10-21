@@ -1,0 +1,11 @@
+{
+  "status": 401,
+  "body": {
+    "GET /api/categories/": 401,
+    "GET /api/transactions/": 401,
+    "GET /api/budgets/": 401,
+    "GET /api/reports/monthly-summary/?month=2026-10": 401,
+    "GET /api/reports/category-breakdown/?month=2026-10&type=expense": 401,
+    "GET /api/reports/budget-status/?month=2026-10": 401
+  }
+}

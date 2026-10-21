@@ -1,0 +1,16 @@
+{
+  "status": 200,
+  "body": {
+    "count": 1,
+    "txn1": {
+      "id": 1,
+      "category": 1,
+      "amount": "30.00",
+      "type": "expense",
+      "date": "2026-10-04",
+      "description": "Groceries run",
+      "created_at": "2026-10-21T11:46:21.559053Z",
+      "updated_at": "2026-10-21T11:50:28.815620Z"
+    }
+  }
+}

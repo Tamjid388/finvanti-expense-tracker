@@ -1,0 +1,8 @@
+{
+  "status": 400,
+  "body": {
+    "type": [
+      "Type is required. Must be income or expense."
+    ]
+  }
+}

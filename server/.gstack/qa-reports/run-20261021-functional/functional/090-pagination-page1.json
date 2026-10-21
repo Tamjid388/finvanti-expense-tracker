@@ -1,0 +1,8 @@
+{
+  "status": 200,
+  "body": {
+    "count": 25,
+    "len": 20,
+    "next": "http://127.0.0.1:8000/api/transactions/?page=2"
+  }
+}

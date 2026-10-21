@@ -1,0 +1,13 @@
+{
+  "status": 201,
+  "body": {
+    "id": 3,
+    "category": 2,
+    "amount": "100.00",
+    "type": "income",
+    "date": "2026-10-15",
+    "description": "payday",
+    "created_at": "2026-10-21T11:50:31.582106Z",
+    "updated_at": "2026-10-21T11:50:31.582117Z"
+  }
+}

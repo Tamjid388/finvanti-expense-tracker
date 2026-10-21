@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "body": {
+    "month": "2026-10",
+    "total_income": "0.00",
+    "total_expenses": "0.00",
+    "net_balance": "0.00"
+  }
+}

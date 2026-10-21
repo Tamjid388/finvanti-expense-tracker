@@ -1,0 +1,8 @@
+{
+  "status": 400,
+  "body": {
+    "category_id": [
+      "Must be an integer."
+    ]
+  }
+}

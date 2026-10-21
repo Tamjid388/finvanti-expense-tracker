@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "body": [
+    {
+      "budget_id": 1,
+      "category_id": null,
+      "limit": "500.00",
+      "spent": "45.00",
+      "remaining": "455.00",
+      "is_over": false
+    }
+  ]
+}

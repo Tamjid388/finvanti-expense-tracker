@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "body": [
+    {
+      "category_id": 2,
+      "category_name": "Salary",
+      "total": "100.00"
+    }
+  ]
+}
