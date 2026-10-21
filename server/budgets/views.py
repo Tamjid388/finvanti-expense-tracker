@@ -1,5 +1,10 @@
 from django.db import IntegrityError, transaction
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiTypes,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -11,6 +16,14 @@ from .serializers import BudgetSerializer
 from .services import month_spend, spend_map_for_months
 
 DUPLICATE_DETAIL = ["Budget for this month and category already exists."]
+
+PATH_ID_PARAM = OpenApiParameter(
+    name="id",
+    type=OpenApiTypes.INT,
+    location=OpenApiParameter.PATH,
+    required=True,
+    description="Budget id.",
+)
 
 FILTER_PARAMS = [
     OpenApiParameter(
@@ -43,14 +56,16 @@ FILTER_PARAMS = [
                      "a set category must be an owned expense category. "
                      "Duplicate (user, month, category) returns 400."),
     ),
-    retrieve=extend_schema(summary="Retrieve my budget"),
+    retrieve=extend_schema(summary="Retrieve my budget", parameters=[PATH_ID_PARAM]),
     partial_update=extend_schema(
         summary="Partially update my budget",
         description="PATCH only. Re-checks scope uniqueness and the expense-only rule.",
+        parameters=[PATH_ID_PARAM],
     ),
     destroy=extend_schema(
         summary="Delete my budget",
         description="204; never deletes historical transactions.",
+        parameters=[PATH_ID_PARAM],
     ),
 )
 class BudgetViewSet(viewsets.ModelViewSet):

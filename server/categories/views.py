@@ -1,5 +1,10 @@
 from django.db import IntegrityError, transaction
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiTypes,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -8,6 +13,14 @@ from .models import TYPE_EXPENSE, TYPE_INCOME, Category
 from .serializers import CategorySerializer, transactions_reference
 
 DUPLICATE_DETAIL = ["Category with this name already exists."]
+
+PATH_ID_PARAM = OpenApiParameter(
+    name="id",
+    type=OpenApiTypes.INT,
+    location=OpenApiParameter.PATH,
+    required=True,
+    description="Category id.",
+)
 
 
 def _map_integrity_error(exc: IntegrityError):
@@ -35,10 +48,11 @@ def _map_integrity_error(exc: IntegrityError):
     create=extend_schema(
         summary="Create a category", description="Owner set from the JWT. 201 on success."
     ),
-    retrieve=extend_schema(summary="Retrieve my category"),
+    retrieve=extend_schema(summary="Retrieve my category", parameters=[PATH_ID_PARAM]),
     partial_update=extend_schema(
         summary="Partially update my category",
         description="PATCH only. Type change is blocked while transactions reference the category.",
+        parameters=[PATH_ID_PARAM],
     ),
     destroy=extend_schema(
         summary="Delete my category",
@@ -46,6 +60,7 @@ def _map_integrity_error(exc: IntegrityError):
             "204 when unreferenced; 400 `category_in_use` when transactions "
             "reference the category. Referenced categories are never cascade-deleted."
         ),
+        parameters=[PATH_ID_PARAM],
     ),
 )
 class CategoryViewSet(viewsets.ModelViewSet):

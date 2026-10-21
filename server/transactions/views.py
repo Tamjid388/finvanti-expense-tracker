@@ -2,7 +2,12 @@ import re
 from datetime import date
 
 from django.db import transaction
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiTypes,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
@@ -12,6 +17,14 @@ from .models import TYPE_EXPENSE, TYPE_INCOME, Transaction
 from .serializers import TransactionSerializer
 
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+PATH_ID_PARAM = OpenApiParameter(
+    name="id",
+    type=OpenApiTypes.INT,
+    location=OpenApiParameter.PATH,
+    required=True,
+    description="Transaction id.",
+)
 
 FILTER_PARAMS = [
     OpenApiParameter(name="type", type=str, location=OpenApiParameter.QUERY,
@@ -52,13 +65,16 @@ def _parse_iso_date(raw: str, field: str) -> date:
         summary="Create a transaction",
         description="Owner set from the JWT. Category must be owned and type-matched.",
     ),
-    retrieve=extend_schema(summary="Retrieve my transaction"),
+    retrieve=extend_schema(summary="Retrieve my transaction", parameters=[PATH_ID_PARAM]),
     partial_update=extend_schema(
         summary="Partially update my transaction",
         description=("PATCH only. Category ownership and category/transaction "
                      "type match are re-validated jointly on partial input."),
+        parameters=[PATH_ID_PARAM],
     ),
-    destroy=extend_schema(summary="Delete my transaction"),
+    destroy=extend_schema(
+        summary="Delete my transaction", parameters=[PATH_ID_PARAM]
+    ),
 )
 class TransactionViewSet(viewsets.ModelViewSet):
     """User-owned transaction CRUD with combined filters (T2/T3)."""

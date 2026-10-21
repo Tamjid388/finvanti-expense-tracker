@@ -1,5 +1,11 @@
 from django.db.models import Q, Sum
-from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiTypes,
+    extend_schema,
+)
+
+from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,12 +32,40 @@ TYPE_PARAM = OpenApiParameter(
     description="Transaction type to group by.",
 )
 
+class MonthlySummarySerializer(serializers.Serializer):
+    """Response shape preview for OpenAPI only (not used for I/O)."""
+
+    month = serializers.CharField(help_text="Requested month as `YYYY-MM`.")
+    total_income = serializers.CharField(help_text="2dp decimal string.")
+    total_expenses = serializers.CharField(help_text="2dp decimal string.")
+    net_balance = serializers.CharField(help_text="income − expenses, 2dp string.")
+
+
+class CategoryBreakdownEntrySerializer(serializers.Serializer):
+    """Response shape preview for OpenAPI only (not used for I/O)."""
+
+    category_id = serializers.IntegerField(allow_null=True)
+    category_name = serializers.CharField()
+    total = serializers.CharField(help_text="2dp decimal string.")
+
+
+class BudgetStatusRowSerializer(serializers.Serializer):
+    """Response shape preview for OpenAPI only (not used for I/O)."""
+
+    budget_id = serializers.IntegerField()
+    category_id = serializers.IntegerField(allow_null=True)
+    limit = serializers.CharField(help_text="2dp decimal string.")
+    spent = serializers.CharField(help_text="2dp decimal string.")
+    remaining = serializers.CharField(help_text="2dp decimal string.")
+    is_over = serializers.BooleanField()
+
 
 @extend_schema(
     summary="Monthly summary",
     description=("Total income, expenses and net for the month. Empty months "
                  "return zeros, never errors."),
     parameters=[MONTH_PARAM],
+    responses=MonthlySummarySerializer,
 )
 class MonthlySummaryView(APIView):
     permission_classes = [IsAuthenticated]
@@ -60,8 +94,10 @@ class MonthlySummaryView(APIView):
 @extend_schema(
     summary="Category breakdown",
     description=("Per-category totals for the month and type in one GROUP BY "
-                 "(no per-category queries), ordered by total descending."),
+                 "(no per-category queries), ordered by total descending, "
+                 "then category name."),
     parameters=[MONTH_PARAM, TYPE_PARAM],
+    responses=CategoryBreakdownEntrySerializer(many=True),
 )
 class CategoryBreakdownView(APIView):
     permission_classes = [IsAuthenticated]
@@ -100,6 +136,7 @@ class CategoryBreakdownView(APIView):
                  "(all scopes). Empty budget list returns `[]`. Reuses the "
                  "budgets spend formula."),
     parameters=[MONTH_PARAM],
+    responses=BudgetStatusRowSerializer(many=True),
 )
 class BudgetStatusView(APIView):
     permission_classes = [IsAuthenticated]
