@@ -1,7 +1,8 @@
 # AGENTS.md — client/
 
 > Frontend scope only. This file wins over root `AGENTS.md` for files under `client/`.
-> Status: `client/` is currently empty / uninitialized. This file defines the contract for scaffolding it.
+> Status: **scaffolded** — React 19 + Vite + TypeScript, TanStack Query v5, React Router v8, shadcn/ui (radix-nova) + Tailwind CSS v4.
+> `src/api/` endpoints + `src/features/*/hooks/` are implemented; pages render placeholder UI mirroring the wireframes until each backend endpoint lands (see `ARCHITECTURE.md`).
 
 ## Project overview
 
@@ -19,14 +20,17 @@ Architecture, folder structure, and conventions: see [`ARCHITECTURE.md`](ARCHITE
 
 ## Setup commands
 
-Not scaffolded yet. Ask before new dependencies beyond the decided stack above.
+Baseline toolchain (see `ARCHITECTURE.md` for rationale): `npm i` resolved latest majors — react 19.3, react-router 8.5, @tanstack/react-query 5.104, tailwindcss 4.3, vite 8.3, typescript 7.0.
 
 ```powershell
-# once scaffolded, document here e.g.:
-# npm install
-# npm run dev
-# npm test
+npm install
+npm run dev        # http://localhost:5173
+npm run typecheck  # tsc -b (strict)
+npm run build      # typecheck + production build
+npm run preview    # serve dist/
 ```
+
+Backend needed for real data live under `src/features/`/`src/api/`; pages are placeholders until wired. Verify against live `server/` (`python manage.py runserver`) before PRs. Here's the workflow: start Django first, then vite; login/refresh flows use the in-memory session in `src/features/auth/session.ts`.
 
 When you scaffold: pick minimal Vite + TS (or PRD-aligned alternative), add `package.json` scripts, then update this section with exact install/dev/test/lint commands. Keep this file <150 lines.
 
@@ -54,4 +58,4 @@ Verify against live `server/` (`python manage.py runserver`) before PR.
 
 Always: read root `AGENTS.md` + `server/AGENTS.md` for API/security rules; keep `server/schema.yml` in sync if contract drifts.
 Ask first: framework choice, auth storage change, adding UI dependency.
-Never: commit tokens, passwords, `.env`. Never hardcode API secrets or bypass 401 handling.
+Never: commit tokens, passwords, `.env`. Never hardcode API secrets or bypass 401 handling. Never hand-edit `src/api/schema.d.ts` (auto-generated, read-only) — change the backend, then `npm run gen:api`.

@@ -10,8 +10,8 @@ Personal Expense Tracker MVP — secure, API-first money tracker.
 See `prd.md` (v1.0, 2026-10-20) for requirements, API surface (§7), data model (§8), and acceptance criteria (§13).
 
 - `server/` — Django 6.1.2 + DRF + Simple JWT + drf-spectacular. SQLite locally, PostgreSQL in shared/deployed envs. See `server/AGENTS.md`.
-- `client/` — currently empty (uninitialized). Future frontend consumes `server/schema.yml` + `prd.md` §7. See `client/AGENTS.md`.
-- `docs/wireframes/web/` + `docs/wireframes/mobile/` — static HTML/CSS/JS wireframes, the UI reference until `client/` is scaffolded.
+- `client/` — React + Vite + TypeScript SPA scaffold (React 19, TanStack Query, React Router, shadcn/ui + Tailwind v4). Pages are placeholder UI until wired to the API. See `client/AGENTS.md` + `client/ARCHITECTURE.md`.
+- `docs/wireframes/web/` + `docs/wireframes/mobile/` — static HTML/CSS/JS wireframes, the UI reference for `client/` screens.
 - `server/schema.yml` — committed OpenAPI snapshot (currently auth-only, expand as endpoints land).
 
 ## Nested agent files
@@ -44,7 +44,10 @@ python manage.py test
 ```
 
 ```powershell
-# frontend — not scaffolded yet; see client/AGENTS.md
+# react frontend (from client/) — see client/ARCHITECTURE.md
+npm install
+npm run dev
+npm run build
 ```
 
 ## Conventions (all packages)

@@ -21,7 +21,7 @@
 | Build tool           | **Vite**                                    | Fast dev server, env-mode aware. |
 | Language             | **TypeScript** (strict)                     | Types mirror `server/schema.yml`. |
 | Server state / cache | **TanStack Query v5** (`@tanstack/react-query`) | All GET/POST/PATCH/DELETE flows, caching, invalidation. |
-| Routing              | **React Router v7** (`react-router`)        | `createBrowserRouter` + protected routes. |
+| Routing              | **React Router v8** (`react-router`)        | `createBrowserRouter` + protected routes. |
 | UI components        | **shadcn/ui** (Radix primitives, copied into repo) | `src/components/ui`, customized via `components.json`. |
 | Styling              | **Tailwind CSS v4**                         | Required by shadcn; tokens in `src/index.css` (CSS variables). |
 | Icons                | lucide-react                                | Default icon set of shadcn. |
