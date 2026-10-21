@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from categories.models import Category
+from core.money import as_money
 from core.months import parse_month_param
+from core.serializers import OwnedCategoryField
 
 from .models import Budget
 from .services import month_spend, status_fields
@@ -30,9 +31,9 @@ class MonthField(serializers.DateField):
 
 class BudgetSerializer(serializers.ModelSerializer):
     month = MonthField()
-    category = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), allow_null=True, required=False
-    )
+    # Null category = overall budget; foreign and absent ids are
+    # indistinguishable 400s via the user-scoped field (B2 rule).
+    category = OwnedCategoryField(required=False, allow_null=True)
     spent = serializers.SerializerMethodField(help_text="Derived from expense transactions.")
     remaining = serializers.SerializerMethodField(help_text="limit_amount - spent.")
     is_over = serializers.SerializerMethodField(help_text="True when spent exceeds the limit.")
@@ -61,13 +62,13 @@ class BudgetSerializer(serializers.ModelSerializer):
             self._status_cache[instance.pk] = status_fields(instance, spend_map)
         return self._status_cache[instance.pk]
 
-    def get_spent(self, instance):
-        return self._status(instance)["spent"]
+    def get_spent(self, instance) -> str:
+        return as_money(self._status(instance)["spent"])
 
-    def get_remaining(self, instance):
-        return self._status(instance)["remaining"]
+    def get_remaining(self, instance) -> str:
+        return as_money(self._status(instance)["remaining"])
 
-    def get_is_over(self, instance):
+    def get_is_over(self, instance) -> bool:
         return self._status(instance)["is_over"]
 
     # -- validation (B2) ---------------------------------------------------
@@ -75,14 +76,6 @@ class BudgetSerializer(serializers.ModelSerializer):
     def validate_limit_amount(self, value):
         if value <= 0:
             raise serializers.ValidationError("Limit must be greater than zero.")
-        return value
-
-    def validate_category(self, value):
-        if value is None:
-            return value  # overall budget scope
-        # Foreign and absent ids surface identically — no existence hint.
-        if self.context["request"].user.id != value.owner_id:
-            raise serializers.ValidationError("Invalid category.")
         return value
 
     def validate(self, attrs):
