@@ -10,6 +10,8 @@ export const qk = {
 
   categories: (params?: QueryParams) => ["categories", params ?? null] as const,
 
+  notes: () => ["notes"] as const,
+
   transactions: (filters: TransactionFilters = {}) => ["transactions", filters] as const,
 
   budgets: (filters: BudgetFilters = {}) => ["budgets", filters] as const,

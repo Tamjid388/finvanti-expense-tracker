@@ -1,0 +1,66 @@
+- generic [ref=f29e7]:
+  - link "Skip to content" [ref=f29e8] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f29e9]:
+    - complementary [ref=f29e10]:
+      - generic [ref=f29e13]:
+        - paragraph [ref=f29e14]: ExpenseTracker
+        - paragraph [ref=f29e15]: MVP · BDT
+      - navigation "Primary" [ref=f29e16]:
+        - link "Dashboard" [ref=f29e17] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f29e24] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f29e29] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f29e35] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f29e40] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f29e46] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f29e50] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f29e55]:
+        - paragraph [ref=f29e56]: Overall budget · October 2026
+        - paragraph [ref=f29e57]: Loading…
+      - generic [ref=f29e58]:
+        - generic [aria-hidden] [ref=f29e59]: "?"
+        - generic [ref=f29e60]: …
+        - button "Log out" [ref=f29e62]
+    - generic [ref=f29e63]:
+      - banner [ref=f29e64]:
+        - generic [ref=f29e65]:
+          - 'group "Month: 2026-10" [ref=f29e66]':
+            - button "Previous month" [ref=f29e67]: ‹
+            - paragraph [ref=f29e69]: October 2026
+            - button "Next month" [ref=f29e70]: ›
+          - search [ref=f29e71]:
+            - textbox "Search transactions" [ref=f29e72]:
+              - /placeholder: Search description, category…
+          - generic [ref=f29e73]:
+            - link "+ Category" [ref=f29e74] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f29e75] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f29e76] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f29e77]
+      - main [ref=f29e78]:
+        - generic [ref=f29e80]:
+          - generic [ref=f29e81]:
+            - generic [ref=f29e82]:
+              - heading "Categories" [level=1] [ref=f29e83]
+              - paragraph [ref=f29e84]: Type must match transaction type · duplicates blocked per user+type
+            - button "New category" [ref=f29e85]
+          - generic [ref=f29e86]:
+            - group "Filter by transaction type" [ref=f29e87]:
+              - button "All" [pressed] [ref=f29e88]
+              - button "Income" [ref=f29e89]
+              - button "Expense" [ref=f29e90]
+            - generic [ref=f29e91]: All (0) · Income (0) · Expense (0)
+          - status [ref=f29e92]:
+            - generic [ref=f29e95]: Loading categories…
+          - generic [ref=f29e97]:
+            - strong [ref=f29e98]: "Deletion note:"
+            - text: categories with past transactions stay in your history and can't be deleted until their transactions are removed.

@@ -6,9 +6,9 @@ paths:
   /api/auth/login/:
     post:
       operationId: auth_login_create
-      description: |-
-        Takes a set of user credentials and returns an access and refresh JSON web
-        token pair to prove the authentication of those credentials.
+      description: Email + password login. Returns the short-lived access token; the
+        refresh token is set as a scoped httpOnly cookie (never in the body).
+      summary: Login
       tags:
       - auth
       requestBody:
@@ -28,13 +28,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmailTokenObtainPair'
+                $ref: '#/components/schemas/AccessResponse'
           description: ''
   /api/auth/logout/:
     post:
       operationId: auth_logout_create
-      description: Blacklist the supplied refresh token. The access token expires
-        on its own (15m).
+      description: Blacklist the refresh token (cookie or body) and clear the refresh
+        cookie. The access token expires on its own (15m).
       summary: Logout
       tags:
       - auth
@@ -46,8 +46,6 @@ paths:
               properties:
                 refresh:
                   type: string
-              required:
-              - refresh
       security:
       - jwtAuth: []
       responses:
@@ -99,9 +97,10 @@ paths:
   /api/auth/token/refresh/:
     post:
       operationId: auth_token_refresh_create
-      description: |-
-        Takes a refresh type JSON web token and returns an access type JSON web
-        token if the refresh token is valid.
+      description: Rotate the refresh token. Read from the httpOnly cookie first,
+        legacy JSON body second (deprecated); returns the new access token and rotates
+        the cookie.
+      summary: Refresh
       tags:
       - auth
       requestBody:
@@ -121,7 +120,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRefresh'
+                $ref: '#/components/schemas/AccessResponse'
           description: ''
   /api/budgets/:
     get:
@@ -382,6 +381,125 @@ paths:
         required: true
       tags:
       - categories
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/notes/:
+    get:
+      operationId: notes_list
+      description: Owner-scoped, ordered by (-updated_at, -id).
+      summary: List my notes
+      tags:
+      - notes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
+          description: ''
+    post:
+      operationId: notes_create
+      description: Owner set from the JWT. 201 on success.
+      summary: Create a note
+      tags:
+      - notes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Note'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Note'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Note'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+          description: ''
+  /api/notes/{id}/:
+    get:
+      operationId: notes_retrieve
+      description: User-owned standalone note CRUD.
+      summary: Retrieve my note
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Note id.
+        required: true
+      tags:
+      - notes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+          description: ''
+    patch:
+      operationId: notes_partial_update
+      description: PATCH only.
+      summary: Partially update my note
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Note id.
+        required: true
+      tags:
+      - notes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNote'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNote'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNote'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+          description: ''
+    delete:
+      operationId: notes_destroy
+      description: 204 on success.
+      summary: Delete my note
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Note id.
+        required: true
+      tags:
+      - notes
       security:
       - jwtAuth: []
       responses:
@@ -768,6 +886,14 @@ paths:
           description: No response body
 components:
   schemas:
+    AccessResponse:
+      type: object
+      description: Access-token-only response body (refresh travels via httpOnly cookie).
+      properties:
+        access:
+          type: string
+      required:
+      - access
     Budget:
       type: object
       properties:
@@ -910,6 +1036,35 @@ components:
       - net_balance
       - total_expenses
       - total_income
+    Note:
+      type: object
+      description: |-
+        Validate + serialize user-owned standalone notes.
+
+        `owner` is never in the payload; the view sets it server-side from
+        `request.user`.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - title
+      - updated_at
     PaginatedTransactionList:
       type: object
       required:
@@ -977,6 +1132,30 @@ components:
           maxLength: 100
         type:
           $ref: '#/components/schemas/TypeEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedNote:
+      type: object
+      description: |-
+        Validate + serialize user-owned standalone notes.
+
+        `owner` is never in the payload; the view sets it server-side from
+        `request.user`.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
         created_at:
           type: string
           format: date-time

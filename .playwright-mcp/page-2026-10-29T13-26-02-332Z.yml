@@ -1,0 +1,82 @@
+- generic [ref=f27e7]:
+  - link "Skip to content" [ref=f27e8] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f27e9]:
+    - complementary [ref=f27e10]:
+      - generic [ref=f27e13]:
+        - paragraph [ref=f27e14]: ExpenseTracker
+        - paragraph [ref=f27e15]: MVP · BDT
+      - navigation "Primary" [ref=f27e16]:
+        - link "Dashboard" [ref=f27e17] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f27e24] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f27e29] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f27e35] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f27e40] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f27e46] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f27e50] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f27e55]:
+        - paragraph [ref=f27e56]: Overall budget · October 2026
+        - paragraph [ref=f27e57]: Loading…
+      - generic [ref=f27e58]:
+        - generic [aria-hidden] [ref=f27e59]: "?"
+        - generic [ref=f27e60]: …
+        - button "Log out" [ref=f27e62]
+    - generic [ref=f27e63]:
+      - banner [ref=f27e64]:
+        - generic [ref=f27e65]:
+          - 'group "Month: 2026-10" [ref=f27e66]':
+            - button "Previous month" [ref=f27e67]: ‹
+            - paragraph [ref=f27e69]: October 2026
+            - button "Next month" [ref=f27e70]: ›
+          - search [ref=f27e71]:
+            - textbox "Search transactions" [ref=f27e72]:
+              - /placeholder: Search description, category…
+          - generic [ref=f27e73]:
+            - link "+ Category" [ref=f27e74] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f27e75] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f27e76] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f27e77]
+      - main [ref=f27e78]:
+        - generic [ref=f27e80]:
+          - generic [ref=f27e81]:
+            - generic [ref=f27e82]:
+              - heading "Good evening, there 👋" [level=1] [ref=f27e83]
+              - paragraph [ref=f27e84]:
+                - generic [ref=f27e85]: This month's income, spending and net balance at a glance.
+            - link "View full report →" [ref=f27e86] [cursor=pointer]:
+              - /url: /reports?month=2026-10
+          - generic [ref=f27e87]:
+            - generic [ref=f27e88]: Income — this month
+            - generic [ref=f27e96]: Expense — this month
+            - generic [ref=f27e104]: Net balance
+          - generic [ref=f27e112]:
+            - generic [ref=f27e113]:
+              - generic [ref=f27e114]:
+                - generic [ref=f27e115]: Budget status
+                - link "Manage →" [ref=f27e116] [cursor=pointer]:
+                  - /url: /budgets?month=2026-10
+              - status [ref=f27e118]:
+                - generic [ref=f27e121]: Loading budgets…
+            - generic [ref=f27e122]:
+              - generic [ref=f27e123]:
+                - generic [ref=f27e124]: Spending by category
+                - generic [ref=f27e125]: type=expense
+              - status [ref=f27e127]:
+                - generic [ref=f27e130]: Loading breakdown…
+          - generic [ref=f27e131]:
+            - generic [ref=f27e132]:
+              - generic [ref=f27e133]: Recent transactions
+              - link "View all →" [ref=f27e134] [cursor=pointer]:
+                - /url: /transactions
+            - status [ref=f27e136]:
+              - generic [ref=f27e139]: Loading transactions…

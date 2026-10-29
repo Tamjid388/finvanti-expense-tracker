@@ -92,12 +92,8 @@ export function DashboardPage() {
             )}
           </p>
         </div>
-        {/* Wireframe `.btn.secondary` — filled ink-black CTA (styles.css). */}
-        <Button
-          variant="secondary"
-          className="border-transparent bg-foreground text-primary-foreground hover:bg-foreground/85"
-          asChild
-        >
+        {/* Primary CTA — matches other primary buttons (bg-primary), large on desktop. */}
+        <Button size="lg" className="w-full sm:w-auto lg:h-11 lg:px-6 lg:text-base" asChild>
           <Link to={`${ROUTES.reports}?month=${month}`}>View full report →</Link>
         </Button>
       </header>

@@ -1,0 +1,105 @@
+- generic:
+  - generic [aria-hidden]:
+    - generic:
+      - link:
+        - /url: "#main"
+        - text: Skip to content
+      - generic:
+        - complementary:
+          - generic:
+            - generic:
+              - paragraph: ExpenseTracker
+              - paragraph: MVP · BDT
+          - navigation:
+            - link:
+              - /url: /
+              - generic: Dashboard
+            - link:
+              - /url: /transactions
+              - generic: Transactions
+              - generic: "35"
+            - link:
+              - /url: /categories
+              - generic: Categories
+            - link:
+              - /url: /notes
+              - generic: Notes
+            - link:
+              - /url: /budgets
+              - generic: Budgets
+            - link:
+              - /url: /reports
+              - generic: Reports
+            - link:
+              - /url: /profile
+              - generic: Profile
+          - generic:
+            - paragraph: Overall budget · October 2026
+            - progressbar
+            - paragraph: ৳ 151.34 / ৳ 35,000.00
+            - link:
+              - /url: /budgets?month=2026-10
+              - text: View budgets
+          - generic:
+            - generic [aria-hidden]: T
+            - generic:
+              - generic: tamjid
+              - generic: tamjid@gmail.com
+            - button
+        - generic:
+          - banner:
+            - generic:
+              - group:
+                - button: ‹
+                - generic:
+                  - paragraph: October 2026
+                - button: ›
+              - search:
+                - textbox:
+                  - /placeholder: Search description, category…
+              - generic:
+                - link:
+                  - /url: /categories?new=1
+                  - text: + Category
+                - link:
+                  - /url: /budgets?new=1
+                  - text: + Budget
+                - link:
+                  - /url: /transactions?new=1
+                  - text: Add transaction
+                - button:
+                  - generic [aria-hidden]: T
+          - main:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - heading [level=1]: Notes
+                    - paragraph: Title required · description optional
+                  - button: New note
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Browser smoke note
+                        - paragraph: created via playwright
+                        - paragraph: Created 10/29/2026, 7:19:06 PM · Updated 10/29/2026, 7:19:06 PM
+                      - generic:
+                        - button
+                        - button
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: cda
+                        - paragraph: asdad
+                        - paragraph: Created 10/29/2026, 7:09:52 PM · Updated 10/29/2026, 7:09:52 PM
+                      - generic:
+                        - button
+                        - button
+  - alertdialog [ref=f1e129]:
+    - generic [ref=f1e130]:
+      - heading "Delete note?" [level=2] [ref=f1e131]
+      - paragraph [ref=f1e132]: “Browser smoke note” will be removed.
+    - generic [ref=f1e133]:
+      - button "Cancel" [active] [ref=f1e134]
+      - button "Delete" [ref=f1e135]

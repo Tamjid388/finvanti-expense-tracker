@@ -14,8 +14,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * @description Takes a set of user credentials and returns an access and refresh JSON web
-         *     token pair to prove the authentication of those credentials.
+         * Login
+         * @description Email + password login. Returns the short-lived access token; the refresh token is set as a scoped httpOnly cookie (never in the body).
          */
         post: operations["auth_login_create"];
         delete?: never;
@@ -35,7 +35,7 @@ export interface paths {
         put?: never;
         /**
          * Logout
-         * @description Blacklist the supplied refresh token. The access token expires on its own (15m).
+         * @description Blacklist the refresh token (cookie or body) and clear the refresh cookie. The access token expires on its own (15m).
          */
         post: operations["auth_logout_create"];
         delete?: never;
@@ -90,8 +90,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * @description Takes a refresh type JSON web token and returns an access type JSON web
-         *     token if the refresh token is valid.
+         * Refresh
+         * @description Rotate the refresh token. Read from the httpOnly cookie first, legacy JSON body second (deprecated); returns the new access token and rotates the cookie.
          */
         post: operations["auth_token_refresh_create"];
         delete?: never;
@@ -202,6 +202,58 @@ export interface paths {
          * @description PATCH only. Type change is blocked while transactions reference the category.
          */
         patch: operations["categories_partial_update"];
+        trace?: never;
+    };
+    "/api/notes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List my notes
+         * @description Owner-scoped, ordered by (-updated_at, -id).
+         */
+        get: operations["notes_list"];
+        put?: never;
+        /**
+         * Create a note
+         * @description Owner set from the JWT. 201 on success.
+         */
+        post: operations["notes_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notes/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Retrieve my note
+         * @description User-owned standalone note CRUD.
+         */
+        get: operations["notes_retrieve"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete my note
+         * @description 204 on success.
+         */
+        delete: operations["notes_destroy"];
+        options?: never;
+        head?: never;
+        /**
+         * Partially update my note
+         * @description PATCH only.
+         */
+        patch: operations["notes_partial_update"];
         trace?: never;
     };
     "/api/reports/budget-status/": {
@@ -342,6 +394,10 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description Access-token-only response body (refresh travels via httpOnly cookie). */
+        AccessResponse: {
+            access: string;
+        };
         Budget: {
             readonly id: number;
             category?: number | null;
@@ -406,6 +462,21 @@ export interface components {
             /** @description income − expenses, 2dp string. */
             net_balance: string;
         };
+        /**
+         * @description Validate + serialize user-owned standalone notes.
+         *
+         *     `owner` is never in the payload; the view sets it server-side from
+         *     `request.user`.
+         */
+        Note: {
+            readonly id: number;
+            title: string;
+            description?: string;
+            /** Format: date-time */
+            readonly created_at: string;
+            /** Format: date-time */
+            readonly updated_at: string;
+        };
         PaginatedTransactionList: {
             /** @example 123 */
             count: number;
@@ -445,6 +516,21 @@ export interface components {
             readonly id?: number;
             name?: string;
             type?: components["schemas"]["TypeEnum"];
+            /** Format: date-time */
+            readonly created_at?: string;
+            /** Format: date-time */
+            readonly updated_at?: string;
+        };
+        /**
+         * @description Validate + serialize user-owned standalone notes.
+         *
+         *     `owner` is never in the payload; the view sets it server-side from
+         *     `request.user`.
+         */
+        PatchedNote: {
+            readonly id?: number;
+            title?: string;
+            description?: string;
             /** Format: date-time */
             readonly created_at?: string;
             /** Format: date-time */
@@ -548,7 +634,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EmailTokenObtainPair"];
+                    "application/json": components["schemas"]["AccessResponse"];
                 };
             };
         };
@@ -563,7 +649,7 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    refresh: string;
+                    refresh?: string;
                 };
             };
         };
@@ -641,7 +727,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TokenRefresh"];
+                    "application/json": components["schemas"]["AccessResponse"];
                 };
             };
         };
@@ -880,6 +966,121 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Category"];
+                };
+            };
+        };
+    };
+    notes_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Note"][];
+                };
+            };
+        };
+    };
+    notes_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Note"];
+                "application/x-www-form-urlencoded": components["schemas"]["Note"];
+                "multipart/form-data": components["schemas"]["Note"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Note"];
+                };
+            };
+        };
+    };
+    notes_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Note id. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Note"];
+                };
+            };
+        };
+    };
+    notes_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Note id. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    notes_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Note id. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedNote"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedNote"];
+                "multipart/form-data": components["schemas"]["PatchedNote"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Note"];
                 };
             };
         };

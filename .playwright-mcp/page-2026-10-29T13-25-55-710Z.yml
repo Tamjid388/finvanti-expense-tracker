@@ -1,0 +1,57 @@
+- generic [ref=f24e7]:
+  - link "Skip to content" [ref=f24e8] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f24e9]:
+    - complementary [ref=f24e10]:
+      - generic [ref=f24e13]:
+        - paragraph [ref=f24e14]: ExpenseTracker
+        - paragraph [ref=f24e15]: MVP · BDT
+      - navigation "Primary" [ref=f24e16]:
+        - link "Dashboard" [ref=f24e17] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f24e24] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f24e29] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f24e35] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f24e40] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f24e46] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f24e50] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f24e55]:
+        - paragraph [ref=f24e56]: Overall budget · October 2026
+        - paragraph [ref=f24e57]: Loading…
+      - generic [ref=f24e58]:
+        - generic [aria-hidden] [ref=f24e59]: "?"
+        - generic [ref=f24e60]: …
+        - button "Log out" [ref=f24e62]
+    - generic [ref=f24e63]:
+      - banner [ref=f24e64]:
+        - generic [ref=f24e65]:
+          - 'group "Month: 2026-10" [ref=f24e66]':
+            - button "Previous month" [ref=f24e67]: ‹
+            - paragraph [ref=f24e69]: October 2026
+            - button "Next month" [ref=f24e70]: ›
+          - search [ref=f24e71]:
+            - textbox "Search transactions" [ref=f24e72]:
+              - /placeholder: Search description, category…
+          - generic [ref=f24e73]:
+            - link "+ Category" [ref=f24e74] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f24e75] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f24e76] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f24e77]
+      - main [ref=f24e78]:
+        - generic [ref=f24e80]:
+          - generic [ref=f24e81]:
+            - heading "Budgets — 2026-10" [level=1] [ref=f24e82]
+            - paragraph [ref=f24e83]: Unique per user+month+scope · spent derived from expense txns · over-budget never blocks txns
+          - button "New budget" [ref=f24e85]
+          - status [ref=f24e86]:
+            - generic [ref=f24e89]: Loading budgets…
+          - generic [ref=f24e90]: Remaining = limit − spent. Negative remaining means over budget — recording transactions is never blocked. Deleting a budget never deletes transactions.

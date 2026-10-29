@@ -3,7 +3,7 @@ import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig 
 
 import { API_BASE_URL } from "@/config/env";
 import { ROUTES } from "@/config/routes";
-import { clearSession, getAccessToken, getRefreshToken, setTokens } from "@/features/auth/session";
+import { clearSession, getAccessToken, setTokens } from "@/features/auth/session";
 import type { FieldErrors, TokenRefreshResponse } from "@/types/api";
 
 export type QueryParams = Record<string, string | number | boolean | null | undefined>;
@@ -31,16 +31,21 @@ export const http: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: { Accept: "application/json" },
   timeout: 15_000,
+  // Send the httpOnly refresh cookie on same-site auth calls.
+  withCredentials: true,
 });
 
 const REFRESH_PATH = "/api/auth/token/refresh/";
 const RETRY_FLAG = "__isRetry";
+// Login/register 401s (e.g. wrong password) must surface to the form — never
+// trigger a silent refresh + login redirect, which would swallow the error.
+const NO_AUTO_REFRESH_PATHS = ["/api/auth/login/", "/api/auth/register/"];
 
 /** Single-flight refresh: parallel 401s share one refresh POST. */
 let refreshPromise: Promise<boolean> | null = null;
 
 http.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  // The refresh call authenticates with the refresh token in the body — no Bearer.
+  // The refresh call authenticates via the httpOnly cookie — no Bearer.
   const isRefreshCall = typeof config.url === "string" && config.url.includes(REFRESH_PATH);
   if (!isRefreshCall) {
     const accessToken = getAccessToken();
@@ -51,6 +56,13 @@ http.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
+function isNoAutoRefreshCall(config: InternalAxiosRequestConfig): boolean {
+  return (
+    typeof config.url === "string" &&
+    NO_AUTO_REFRESH_PATHS.some((path) => config.url!.includes(path))
+  );
+}
+
 http.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -59,7 +71,7 @@ http.interceptors.response.use(
     const isRefreshCall =
       typeof config?.url === "string" && config.url.includes(REFRESH_PATH);
 
-    if (status === 401 && config && !config[RETRY_FLAG] && !isRefreshCall && getRefreshToken()) {
+    if (status === 401 && config && !config[RETRY_FLAG] && !isRefreshCall && !isNoAutoRefreshCall(config)) {
       config[RETRY_FLAG] = true;
       const refreshed = await refreshAccessToken();
       if (refreshed) {
@@ -123,15 +135,13 @@ function cleanParams(params?: QueryParams): QueryParams | undefined {
 
 function refreshAccessToken(): Promise<boolean> {
   if (!refreshPromise) {
-    const refreshToken = getRefreshToken();
-    if (!refreshToken) {
-      return Promise.resolve(false);
-    }
+    // The refresh token travels in the httpOnly cookie (sent via
+    // withCredentials) — never in the body or JS memory.
     // Flagged so the interceptor never refreshes-the-refresh on a 401 here.
     refreshPromise = http
       .post<TokenRefreshResponse>(
         REFRESH_PATH,
-        { refresh: refreshToken },
+        {},
         {
           headers: { Accept: "application/json", "Content-Type": "application/json" },
           // Reuse the retry flag slot so the interceptor skips this call.
@@ -139,8 +149,8 @@ function refreshAccessToken(): Promise<boolean> {
         } as Record<string, unknown>,
       )
       .then((response) => {
-        // Rotation returns a NEW refresh token — store the fresh pair.
-        setTokens(response.data);
+        // Rotation sets a NEW refresh cookie server-side; store the access token.
+        setTokens({ access: response.data.access });
         return true;
       })
       .catch(() => false)

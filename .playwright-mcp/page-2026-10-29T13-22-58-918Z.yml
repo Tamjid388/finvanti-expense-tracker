@@ -1,0 +1,81 @@
+- generic [ref=f7e27]:
+  - link "Skip to content" [ref=f7e28] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f7e29]:
+    - complementary [ref=f7e30]:
+      - generic [ref=f7e33]:
+        - paragraph [ref=f7e34]: ExpenseTracker
+        - paragraph [ref=f7e35]: MVP · BDT
+      - navigation "Primary" [ref=f7e36]:
+        - link "Dashboard" [ref=f7e37] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f7e44] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f7e49] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f7e55] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f7e60] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f7e66] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f7e70] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f7e75]:
+        - paragraph [ref=f7e76]: Overall budget · October 2026
+        - paragraph [ref=f7e77]: Loading…
+      - generic [ref=f7e78]:
+        - generic [aria-hidden] [ref=f7e79]: T
+        - generic [ref=f7e80]:
+          - generic [ref=f7e81]: tamjid
+          - generic [ref=f7e82]: tamjid@gmail.com
+        - button "Log out" [ref=f7e83]
+    - generic [ref=f7e84]:
+      - banner [ref=f7e85]:
+        - generic [ref=f7e86]:
+          - 'group "Month: 2026-10" [ref=f7e87]':
+            - button "Previous month" [ref=f7e88]: ‹
+            - paragraph [ref=f7e90]: October 2026
+            - button "Next month" [ref=f7e91]: ›
+          - search [ref=f7e92]:
+            - textbox "Search transactions" [ref=f7e93]:
+              - /placeholder: Search description, category…
+          - generic [ref=f7e94]:
+            - link "+ Category" [ref=f7e95] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f7e96] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f7e97] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f7e98]:
+              - generic [aria-hidden] [ref=f7e99]: T
+      - main [ref=f7e100]:
+        - generic [ref=f7e102]:
+          - generic [ref=f7e103]:
+            - heading "Profile" [level=1] [ref=f7e104]
+            - paragraph [ref=f7e105]: Your account and sign-in sessions.
+          - generic [ref=f7e106]:
+            - generic [ref=f7e107]:
+              - generic [ref=f7e108]:
+                - generic [ref=f7e109]: Account
+                - generic [ref=f7e110]: Verified
+              - generic [ref=f7e111]:
+                - generic [ref=f7e112]:
+                  - generic [aria-hidden] [ref=f7e113]: T
+                  - generic [ref=f7e114]:
+                    - paragraph [ref=f7e115]: tamjid
+                    - paragraph [ref=f7e116]: tamjid@gmail.com
+                - generic [ref=f7e117]:
+                  - generic [ref=f7e118]: Default currency
+                  - textbox "Default currency" [disabled]: BDT — Bangladeshi Taka
+            - generic [ref=f7e119]:
+              - generic [ref=f7e120]: Sessions & security
+              - generic [ref=f7e122]:
+                - generic [ref=f7e123]:
+                  - generic [ref=f7e124]:
+                    - paragraph [ref=f7e125]: This device
+                    - paragraph [ref=f7e126]: Renews itself automatically while you use the app
+                  - generic [ref=f7e127]: Current
+                - paragraph [ref=f7e128]: Signing out ends this session on this device. You can sign back in anytime.
+                - button "Log out" [ref=f7e130]
+                - paragraph [ref=f7e131]: Access tokens stay usable until expiry. The client clears storage on logout.

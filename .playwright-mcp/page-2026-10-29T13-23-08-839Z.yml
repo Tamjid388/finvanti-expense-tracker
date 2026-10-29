@@ -1,0 +1,51 @@
+- generic [ref=f8e7]:
+  - link "Skip to content" [ref=f8e8] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f8e9]:
+    - complementary [ref=f8e10]:
+      - generic [ref=f8e13]:
+        - paragraph [ref=f8e14]: ExpenseTracker
+        - paragraph [ref=f8e15]: MVP · BDT
+      - navigation "Primary" [ref=f8e16]:
+        - link "Dashboard" [ref=f8e17] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f8e24] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f8e29] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f8e35] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f8e40] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f8e46] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f8e50] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f8e55]:
+        - paragraph [ref=f8e56]: Overall budget · October 2026
+        - paragraph [ref=f8e57]: Loading…
+      - generic [ref=f8e58]:
+        - generic [aria-hidden] [ref=f8e59]: "?"
+        - generic [ref=f8e60]: …
+        - button "Log out" [ref=f8e62]
+    - generic [ref=f8e63]:
+      - banner [ref=f8e64]:
+        - generic [ref=f8e65]:
+          - 'group "Month: 2026-10" [ref=f8e66]':
+            - button "Previous month" [ref=f8e67]: ‹
+            - paragraph [ref=f8e69]: October 2026
+            - button "Next month" [ref=f8e70]: ›
+          - search [ref=f8e71]:
+            - textbox "Search transactions" [ref=f8e72]:
+              - /placeholder: Search description, category…
+          - generic [ref=f8e73]:
+            - link "+ Category" [ref=f8e74] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f8e75] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f8e76] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f8e77]
+      - main [ref=f8e78]:
+        - status [ref=f8e80]:
+          - generic [ref=f8e83]: Loading screen…

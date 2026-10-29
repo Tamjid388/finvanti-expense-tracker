@@ -1,0 +1,57 @@
+- generic [ref=f23e7]:
+  - link "Skip to content" [ref=f23e8] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f23e9]:
+    - complementary [ref=f23e10]:
+      - generic [ref=f23e13]:
+        - paragraph [ref=f23e14]: ExpenseTracker
+        - paragraph [ref=f23e15]: MVP · BDT
+      - navigation "Primary" [ref=f23e16]:
+        - link "Dashboard" [ref=f23e17] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f23e24] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f23e29] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f23e35] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f23e40] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f23e46] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f23e50] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f23e55]:
+        - paragraph [ref=f23e56]: Overall budget · October 2026
+        - paragraph [ref=f23e57]: Loading…
+      - generic [ref=f23e58]:
+        - generic [aria-hidden] [ref=f23e59]: "?"
+        - generic [ref=f23e60]: …
+        - button "Log out" [ref=f23e62]
+    - generic [ref=f23e63]:
+      - banner [ref=f23e64]:
+        - generic [ref=f23e65]:
+          - 'group "Month: 2026-10" [ref=f23e66]':
+            - button "Previous month" [ref=f23e67]: ‹
+            - paragraph [ref=f23e69]: October 2026
+            - button "Next month" [ref=f23e70]: ›
+          - search [ref=f23e71]:
+            - textbox "Search transactions" [ref=f23e72]:
+              - /placeholder: Search description, category…
+          - generic [ref=f23e73]:
+            - link "+ Category" [ref=f23e74] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f23e75] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f23e76] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f23e77]
+      - main [ref=f23e78]:
+        - generic [ref=f23e80]:
+          - generic [ref=f23e81]:
+            - generic [ref=f23e82]:
+              - heading "Notes" [level=1] [ref=f23e83]
+              - paragraph [ref=f23e84]: Title required · description optional
+            - button "New note" [ref=f23e85]
+          - status [ref=f23e86]:
+            - generic [ref=f23e89]: Loading notes…

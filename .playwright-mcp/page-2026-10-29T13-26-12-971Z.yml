@@ -1,0 +1,75 @@
+- generic [ref=f32e7]:
+  - link "Skip to content" [ref=f32e8] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f32e9]:
+    - complementary [ref=f32e10]:
+      - generic [ref=f32e13]:
+        - paragraph [ref=f32e14]: ExpenseTracker
+        - paragraph [ref=f32e15]: MVP · BDT
+      - navigation "Primary" [ref=f32e16]:
+        - link "Dashboard" [ref=f32e17] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f32e24] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f32e29] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f32e35] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f32e40] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f32e46] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f32e50] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f32e55]:
+        - paragraph [ref=f32e56]: Overall budget · October 2026
+        - paragraph [ref=f32e57]: Loading…
+      - generic [ref=f32e58]:
+        - generic [aria-hidden] [ref=f32e59]: "?"
+        - generic [ref=f32e60]: …
+        - button "Log out" [ref=f32e62]
+    - generic [ref=f32e63]:
+      - banner [ref=f32e64]:
+        - generic [ref=f32e65]:
+          - 'group "Month: 2026-10" [ref=f32e66]':
+            - button "Previous month" [ref=f32e67]: ‹
+            - paragraph [ref=f32e69]: October 2026
+            - button "Next month" [ref=f32e70]: ›
+          - search [ref=f32e71]:
+            - textbox "Search transactions" [ref=f32e72]:
+              - /placeholder: Search description, category…
+          - generic [ref=f32e73]:
+            - link "+ Category" [ref=f32e74] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f32e75] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f32e76] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f32e77]
+      - main [ref=f32e78]:
+        - generic [ref=f32e80]:
+          - generic [ref=f32e82]:
+            - heading "Reports" [level=1] [ref=f32e83]
+            - paragraph [ref=f32e84]: User-scoped · month boundaries inclusive · empty month returns zeros
+          - generic [ref=f32e85]:
+            - generic [ref=f32e86]: Monthly summary — October 2026
+            - status [ref=f32e89]:
+              - generic [ref=f32e92]: Loading summary…
+          - generic [ref=f32e93]:
+            - generic [ref=f32e94]:
+              - generic [ref=f32e95]:
+                - generic [ref=f32e96]: Category breakdown
+                - group "Filter by transaction type" [ref=f32e97]:
+                  - button "Income" [ref=f32e98]
+                  - button "Expense" [pressed] [ref=f32e99]
+              - status [ref=f32e101]:
+                - generic [ref=f32e104]: Loading breakdown…
+            - generic [ref=f32e105]:
+              - generic [ref=f32e106]: Budget status — October 2026
+              - status [ref=f32e109]:
+                - generic [ref=f32e112]: Loading budget status…
+          - generic [ref=f32e114]:
+            - generic [ref=f32e115]:
+              - strong [ref=f32e116]: Empty months show ৳0
+              - text: — months with no activity display zeros and empty lists, never errors.
+            - button "Next month →" [ref=f32e117]

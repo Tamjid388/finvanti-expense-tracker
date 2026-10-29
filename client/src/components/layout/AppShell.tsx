@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 
-import { ArrowLeftRight, ChartColumn, CircleUser, LogOut, Plus, Search, Tags, Target, User, LayoutDashboard } from "lucide-react";
+import { ArrowLeftRight, ChartColumn, CircleUser, LogOut, NotebookPen, Plus, Search, Tags, Target, User, LayoutDashboard } from "lucide-react";
 import { Link, NavLink, Outlet, useNavigate, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ const NAV_ITEMS: ReadonlyArray<{
   { to: ROUTES.dashboard, label: "Dashboard", short: "Home", icon: LayoutDashboard },
   { to: ROUTES.transactions, label: "Transactions", short: "Txns", icon: ArrowLeftRight },
   { to: ROUTES.categories, label: "Categories", short: "Cats", icon: Tags },
+  { to: ROUTES.notes, label: "Notes", short: "Notes", icon: NotebookPen },
   { to: ROUTES.budgets, label: "Budgets", short: "Budgets", icon: Target },
   { to: ROUTES.reports, label: "Reports", short: "Reports", icon: ChartColumn },
   { to: ROUTES.profile, label: "Profile", short: "Profile", icon: User },

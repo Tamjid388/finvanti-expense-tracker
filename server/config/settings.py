@@ -56,6 +56,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+# httpOnly refresh-token cookie (docs/superpowers/specs/2026-10-29-cookie-auth-design.md).
+# Path scope covers /api/auth/ so login, refresh, and logout all receive it.
+REFRESH_COOKIE_NAME = "refresh_token"
+REFRESH_COOKIE_MAX_AGE = 86400  # 1d = refresh token lifetime
+REFRESH_COOKIE_SECURE = not DEBUG
+REFRESH_COOKIE_SAMESITE = "Lax"
+REFRESH_COOKIE_PATH = "/api/auth/"
+
 
 # Application definition
 
@@ -76,6 +86,7 @@ INSTALLED_APPS = [
     "categories",
     "transactions",
     "budgets",
+    "notes",
     "reports",
     "core",
 ]

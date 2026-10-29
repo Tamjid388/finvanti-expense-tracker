@@ -1,0 +1,85 @@
+- generic [ref=f1e7]:
+  - link "Skip to content" [ref=f1e8] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f1e9]:
+    - complementary [ref=f1e10]:
+      - generic [ref=f1e13]:
+        - paragraph [ref=f1e14]: ExpenseTracker
+        - paragraph [ref=f1e15]: MVP · BDT
+      - navigation "Primary" [ref=f1e16]:
+        - link "Dashboard" [ref=f1e17] [cursor=pointer]:
+          - /url: /
+        - link "Transactions 35" [ref=f1e24] [cursor=pointer]:
+          - /url: /transactions
+          - generic [ref=f1e28]: Transactions
+          - generic [ref=f1e29]: "35"
+        - link "Categories" [ref=f1e30] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f1e36] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f1e41] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f1e47] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f1e51] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f1e56]:
+        - paragraph [ref=f1e57]: Overall budget · October 2026
+        - progressbar "Overall budget progress" [ref=f1e58]
+        - paragraph [ref=f1e60]: ৳ 151.34 / ৳ 35,000.00
+        - link "View budgets" [ref=f1e61] [cursor=pointer]:
+          - /url: /budgets?month=2026-10
+      - generic [ref=f1e62]:
+        - generic [aria-hidden] [ref=f1e63]: T
+        - generic [ref=f1e64]:
+          - generic [ref=f1e65]: tamjid
+          - generic [ref=f1e66]: tamjid@gmail.com
+        - button "Log out" [ref=f1e67]
+    - generic [ref=f1e68]:
+      - banner [ref=f1e69]:
+        - generic [ref=f1e70]:
+          - 'group "Month: 2026-10" [ref=f1e71]':
+            - button "Previous month" [ref=f1e72]: ‹
+            - paragraph [ref=f1e74]: October 2026
+            - button "Next month" [ref=f1e75]: ›
+          - search [ref=f1e76]:
+            - textbox "Search transactions" [ref=f1e77]:
+              - /placeholder: Search description, category…
+          - generic [ref=f1e78]:
+            - link "+ Category" [ref=f1e79] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f1e80] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f1e81] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f1e82]:
+              - generic [aria-hidden] [ref=f1e83]: T
+      - main [ref=f1e84]:
+        - generic [ref=f1e86]:
+          - generic [ref=f1e87]:
+            - generic [ref=f1e88]:
+              - heading "Notes" [level=1] [ref=f1e89]
+              - paragraph [ref=f1e90]: Title required · description optional
+            - button "Close form" [active] [ref=f1e102]
+          - generic [ref=f1e103]:
+            - generic [ref=f1e104]: Add note
+            - generic [ref=f1e107]:
+              - generic [ref=f1e108]:
+                - generic [ref=f1e109]: Title
+                - textbox "Title" [ref=f1e110]:
+                  - /placeholder: e.g. Grocery ideas
+              - generic [ref=f1e111]:
+                - generic [ref=f1e112]: Description
+                - textbox "Description" [ref=f1e113]:
+                  - /placeholder: Optional details…
+              - generic [ref=f1e114]:
+                - button "Cancel" [ref=f1e115]
+                - button "Create note" [ref=f1e116]
+          - generic [ref=f1e94]:
+            - generic [ref=f1e95]:
+              - paragraph [ref=f1e96]: cda
+              - paragraph [ref=f1e97]: asdad
+              - paragraph [ref=f1e98]: Created 10/29/2026, 7:09:52 PM · Updated 10/29/2026, 7:09:52 PM
+            - generic [ref=f1e99]:
+              - button "Edit cda" [ref=f1e100]
+              - button "Delete cda" [ref=f1e101]

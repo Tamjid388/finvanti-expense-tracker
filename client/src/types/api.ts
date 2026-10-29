@@ -10,11 +10,10 @@ export type LoginPayload = components["schemas"]["EmailTokenObtainPair"];
 
 export interface TokenPair {
   access: string;
-  refresh: string;
 }
 
-export type LoginResponse = TokenPair;
-export type TokenRefreshResponse = TokenPair;
+export type LoginResponse = components["schemas"]["AccessResponse"];
+export type TokenRefreshResponse = components["schemas"]["AccessResponse"];
 export type RegisterPayload = Omit<components["schemas"]["Register"], "id">;
 export type RegisterResponse = components["schemas"]["Register"];
 
@@ -41,6 +40,11 @@ export type TransactionFilters = {
 export type Budget = components["schemas"]["Budget"];
 export type BudgetInput = Omit<Budget, "id" | "spent" | "remaining" | "is_over">;
 export type BudgetUpdate = components["schemas"]["PatchedBudget"];
+
+// notes
+export type Note = components["schemas"]["Note"];
+export type NoteInput = Omit<Note, "id" | "created_at" | "updated_at">;
+export type NoteUpdate = components["schemas"]["PatchedNote"];
 
 // Alias (not interface) to satisfy QueryParams.
 export type BudgetFilters = {

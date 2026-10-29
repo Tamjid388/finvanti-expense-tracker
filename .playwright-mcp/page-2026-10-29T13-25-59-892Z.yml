@@ -1,0 +1,66 @@
+- generic [ref=f26e7]:
+  - link "Skip to content" [ref=f26e8] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f26e9]:
+    - complementary [ref=f26e10]:
+      - generic [ref=f26e13]:
+        - paragraph [ref=f26e14]: ExpenseTracker
+        - paragraph [ref=f26e15]: MVP · BDT
+      - navigation "Primary" [ref=f26e16]:
+        - link "Dashboard" [ref=f26e17] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f26e24] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f26e29] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f26e35] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f26e40] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f26e46] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f26e50] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f26e55]:
+        - paragraph [ref=f26e56]: Overall budget · October 2026
+        - paragraph [ref=f26e57]: Loading…
+      - generic [ref=f26e58]:
+        - generic [aria-hidden] [ref=f26e59]: "?"
+        - generic [ref=f26e60]: …
+        - button "Log out" [ref=f26e62]
+    - generic [ref=f26e63]:
+      - banner [ref=f26e64]:
+        - generic [ref=f26e65]:
+          - 'group "Month: 2026-10" [ref=f26e66]':
+            - button "Previous month" [ref=f26e67]: ‹
+            - paragraph [ref=f26e69]: October 2026
+            - button "Next month" [ref=f26e70]: ›
+          - search [ref=f26e71]:
+            - textbox "Search transactions" [ref=f26e72]:
+              - /placeholder: Search description, category…
+          - generic [ref=f26e73]:
+            - link "+ Category" [ref=f26e74] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f26e75] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f26e76] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f26e77]
+      - main [ref=f26e78]:
+        - generic [ref=f26e80]:
+          - generic [ref=f26e81]:
+            - heading "Profile" [level=1] [ref=f26e82]
+            - paragraph [ref=f26e83]: Your account and sign-in sessions.
+          - generic [ref=f26e84]:
+            - generic [ref=f26e85]: Account
+            - generic [ref=f26e94]:
+              - generic [ref=f26e95]: Sessions & security
+              - generic [ref=f26e97]:
+                - generic [ref=f26e98]:
+                  - generic [ref=f26e99]:
+                    - paragraph [ref=f26e100]: This device
+                    - paragraph [ref=f26e101]: Renews itself automatically while you use the app
+                  - generic [ref=f26e102]: Current
+                - paragraph [ref=f26e103]: Signing out ends this session on this device. You can sign back in anytime.
+                - button "Log out" [ref=f26e105]
+                - paragraph [ref=f26e106]: Access tokens stay usable until expiry. The client clears storage on logout.

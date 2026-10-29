@@ -23,6 +23,9 @@ const TransactionsPage = lazy(() =>
 const CategoriesPage = lazy(() =>
   import("@/features/categories").then(({ CategoriesPage }) => ({ default: CategoriesPage })),
 );
+const NotesPage = lazy(() =>
+  import("@/features/notes").then(({ NotesPage }) => ({ default: NotesPage })),
+);
 const BudgetsPage = lazy(() =>
   import("@/features/budgets").then(({ BudgetsPage }) => ({ default: BudgetsPage })),
 );
@@ -55,6 +58,7 @@ export const router = createBrowserRouter([
       { index: true, element: withSuspense(<DashboardPage />) },
       { path: "transactions", element: withSuspense(<TransactionsPage />) },
       { path: "categories", element: withSuspense(<CategoriesPage />) },
+      { path: "notes", element: withSuspense(<NotesPage />) },
       { path: "budgets", element: withSuspense(<BudgetsPage />) },
       { path: "reports", element: withSuspense(<ReportsPage />) },
       { path: "profile", element: withSuspense(<ProfilePage />) },

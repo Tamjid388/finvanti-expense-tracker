@@ -1,0 +1,60 @@
+- generic [ref=f19e27]:
+  - link "Skip to content" [ref=f19e28] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=f19e29]:
+    - complementary [ref=f19e30]:
+      - generic [ref=f19e33]:
+        - paragraph [ref=f19e34]: ExpenseTracker
+        - paragraph [ref=f19e35]: MVP · BDT
+      - navigation "Primary" [ref=f19e36]:
+        - link "Dashboard" [ref=f19e37] [cursor=pointer]:
+          - /url: /
+        - link "Transactions" [ref=f19e44] [cursor=pointer]:
+          - /url: /transactions
+        - link "Categories" [ref=f19e49] [cursor=pointer]:
+          - /url: /categories
+        - link "Notes" [ref=f19e55] [cursor=pointer]:
+          - /url: /notes
+        - link "Budgets" [ref=f19e60] [cursor=pointer]:
+          - /url: /budgets
+        - link "Reports" [ref=f19e66] [cursor=pointer]:
+          - /url: /reports
+        - link "Profile" [ref=f19e70] [cursor=pointer]:
+          - /url: /profile
+      - generic [ref=f19e75]:
+        - paragraph [ref=f19e76]: Overall budget · October 2026
+        - paragraph [ref=f19e77]: Loading…
+      - generic [ref=f19e78]:
+        - generic [aria-hidden] [ref=f19e79]: T
+        - generic [ref=f19e80]:
+          - generic [ref=f19e81]: tamjid
+          - generic [ref=f19e82]: tamjid@gmail.com
+        - button "Log out" [ref=f19e83]
+    - generic [ref=f19e84]:
+      - banner [ref=f19e85]:
+        - generic [ref=f19e86]:
+          - 'group "Month: 2026-10" [ref=f19e87]':
+            - button "Previous month" [ref=f19e88]: ‹
+            - paragraph [ref=f19e90]: October 2026
+            - button "Next month" [ref=f19e91]: ›
+          - search [ref=f19e92]:
+            - textbox "Search transactions" [ref=f19e93]:
+              - /placeholder: Search description, category…
+          - generic [ref=f19e94]:
+            - link "+ Category" [ref=f19e95] [cursor=pointer]:
+              - /url: /categories?new=1
+            - link "+ Budget" [ref=f19e96] [cursor=pointer]:
+              - /url: /budgets?new=1
+            - link "Add transaction" [ref=f19e97] [cursor=pointer]:
+              - /url: /transactions?new=1
+            - button "Account menu" [ref=f19e98]:
+              - generic [aria-hidden] [ref=f19e99]: T
+      - main [ref=f19e100]:
+        - generic [ref=f19e102]:
+          - generic [ref=f19e103]:
+            - generic [ref=f19e104]:
+              - heading "Notes" [level=1] [ref=f19e105]
+              - paragraph [ref=f19e106]: Title required · description optional
+            - button "New note" [ref=f19e107]
+          - status [ref=f19e108]:
+            - generic [ref=f19e111]: Loading notes…
