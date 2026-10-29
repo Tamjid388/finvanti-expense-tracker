@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { Money } from "@/components/shared/Money";
+import { MonthPager } from "@/components/shared/MonthPager";
 import { ROUTES } from "@/config/routes";
 import { useMonthParam } from "@/hooks/use-month-param";
 import { monthBounds } from "@/lib/dates";
@@ -38,7 +39,7 @@ function greeting(): string {
 
 /** Wireframe dashboard: greeting, KPIs, budget status, category bars, recents. */
 export function DashboardPage() {
-  const { month, label } = useMonthParam();
+  const { month, label, shiftMonth } = useMonthParam();
   const bounds = monthBounds(month);
 
   const me = useMe();
@@ -93,9 +94,12 @@ export function DashboardPage() {
           </p>
         </div>
         {/* Primary CTA — matches other primary buttons (bg-primary), large on desktop. */}
-        <Button size="lg" className="w-full sm:w-auto lg:h-11 lg:px-6 lg:text-base" asChild>
-          <Link to={`${ROUTES.reports}?month=${month}`}>View full report →</Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <MonthPager label={label} month={month} onShift={shiftMonth} />
+          <Button size="lg" className="w-full sm:w-auto lg:h-11 lg:px-6 lg:text-base" asChild>
+            <Link to={`${ROUTES.reports}?month=${month}`}>View full report →</Link>
+          </Button>
+        </div>
       </header>
 
       {failed ? (

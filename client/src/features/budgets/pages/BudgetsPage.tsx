@@ -11,6 +11,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { Money } from "@/components/shared/Money";
+import { MonthPager } from "@/components/shared/MonthPager";
 import { toast } from "@/components/shared/Toaster";
 import { useMonthParam } from "@/hooks/use-month-param";
 import { useCategories } from "@/features/categories/hooks/use-categories";
@@ -35,7 +36,7 @@ function progressTone(percent: number, isOver: boolean): string {
 
 /** Wireframe budgets screen: month title, budget cards, remaining math. */
 export function BudgetsPage() {
-  const { month, label } = useMonthParam();
+  const { month, label, shiftMonth } = useMonthParam();
   const [params] = useSearchParams();
   const [showForm, setShowForm] = useState(() => params.get("new") === "1");
   const [editing, setEditing] = useState<Budget | null>(null);
@@ -81,11 +82,14 @@ export function BudgetsPage() {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">Budgets — {month}</h1>
-        <p className="text-sm text-muted-foreground">
-          Unique per user+month+scope · spent derived from expense txns · over-budget never blocks txns
-        </p>
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold">Budgets</h1>
+          <p className="text-sm text-muted-foreground">
+            Unique per user+month+scope · spent derived from expense txns · over-budget never blocks txns
+          </p>
+        </div>
+        <MonthPager label={label} month={month} onShift={shiftMonth} />
       </header>
 
       <div className="flex flex-wrap items-center justify-end gap-3">

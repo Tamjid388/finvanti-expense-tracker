@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { Money } from "@/components/shared/Money";
+import { MonthPager } from "@/components/shared/MonthPager";
 import { TypeSegmented } from "@/components/shared/TypeSegmented";
 import { useMonthParam } from "@/hooks/use-month-param";
 import { useCategories } from "@/features/categories/hooks/use-categories";
@@ -56,6 +57,7 @@ export function ReportsPage() {
             User-scoped · month boundaries inclusive · empty month returns zeros
           </p>
         </div>
+        <MonthPager label={label} month={month} onShift={shiftMonth} />
       </header>
 
       {failed ? (

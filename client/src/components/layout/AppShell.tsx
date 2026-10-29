@@ -178,10 +178,9 @@ function AccountMenu() {
   );
 }
 
-/** Wireframe topbar: month picker, global search, quick-add actions. */
+/** Topbar: global search + quick-add. Month picking lives on each page. */
 function Topbar() {
   const navigate = useNavigate();
-  const { month, label, shiftMonth } = useMonthParam();
   const [params] = useSearchParams();
   const [query, setQuery] = useState(params.get("q") ?? "");
 
@@ -198,18 +197,6 @@ function Topbar() {
   return (
     <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
       <div className="flex flex-wrap items-center gap-2 px-4 py-2">
-        <div className="flex items-center gap-1" role="group" aria-label={`Month: ${month}`}>
-          <Button variant="ghost" size="icon" aria-label="Previous month" onClick={() => shiftMonth(-1)}>
-            ‹
-          </Button>
-          <div className="min-w-36 text-center">
-            <p className="text-sm font-semibold">{label}</p>
-          </div>
-          <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => shiftMonth(1)}>
-            ›
-          </Button>
-        </div>
-
         <form onSubmit={submitSearch} role="search" className="relative min-w-40 flex-1">
           <Search
             className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
@@ -225,12 +212,6 @@ function Topbar() {
         </form>
 
         <div className="flex w-full flex-wrap items-center justify-center gap-1.5 sm:w-auto">
-          <Button variant="ghost" asChild>
-            <Link to={`${ROUTES.categories}?new=1`}>+ Category</Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link to={`${ROUTES.budgets}?new=1`}>+ Budget</Link>
-          </Button>
           <Button size="lg" asChild>
             <Link to={`${ROUTES.transactions}?new=1`}>
               <Plus className="size-4" aria-hidden />
