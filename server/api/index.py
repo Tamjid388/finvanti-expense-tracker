@@ -1,8 +1,7 @@
 """Vercel serverless entrypoint for the Django API.
 
-Vercel's Python runtime imports `app` from any file under `api/`.
+Vercel's Python runtime imports `app` from files under `api/`.
 `config.wsgi.application` is the Django WSGI app — Vercel calls it per request.
-No code changes needed here when adding endpoints; just redeploy.
 """
 import os
 import sys

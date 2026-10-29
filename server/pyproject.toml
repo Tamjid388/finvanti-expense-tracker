@@ -1,0 +1,27 @@
+[project]
+name = "finvanti-api"
+version = "1.0.0"
+description = "Personal Expense Tracker API (Django + DRF on Vercel)"
+requires-python = ">=3.12"
+dependencies = [
+  "Django==6.1.2",
+  "djangorestframework==3.18.3",
+  "djangorestframework-simplejwt==5.5.1",
+  "django-cors-headers==4.3.1",
+  "drf-spectacular==0.30.0",
+  "psycopg[binary]==3.3.6",
+  "sqlparse==0.6.0",
+  "tzdata==2026.5",
+  "whitenoise==6.11.0",
+]
+
+[tool.vercel]
+# Explicit WSGI entrypoint (also auto-detectable via manage.py).
+entrypoint = "config.wsgi:application"
+
+[tool.vercel.scripts]
+# Runs after `uv` installs dependencies. Vercel serves STATIC_ROOT from its
+# CDN; WhiteNoise covers local `vercel dev`. DATABASE_URL must be set on the
+# project (it is — collectstatic itself needs no DB rows, but settings.py
+# requires the variable at import time).
+build = "python manage.py collectstatic --noinput"

@@ -1,0 +1,10 @@
+# Never upload secrets, local state, or build artifacts to Vercel.
+.env
+.env.*
+venv/
+__pycache__/
+*.pyc
+staticfiles/
+*.sqlite3
+*.log
+.pytest_cache/
