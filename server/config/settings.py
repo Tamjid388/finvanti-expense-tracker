@@ -42,28 +42,74 @@ _load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
+#
+# Vercel/production is driven entirely by environment variables:
+#   SECRET_KEY        Django secret (required in production, generate with
+#                     `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`)
+#   DEBUG             "False" in production / on Vercel
+#   ALLOWED_HOSTS     comma-separated, e.g. "my-api.vercel.app,.vercel.app"
+#   FRONTEND_URL      comma-separated frontend origin(s) for CORS/CSRF,
+#                     e.g. "https://my-app.vercel.app"
+#   DATABASE_URL      Neon/Postgres URL (required at runtime)
+#   REFRESH_COOKIE_SAMESITE  "None" for cross-site (Vercel frontend != backend),
+#                     "Lax" for same-origin local dev
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y)f_qzm+a)qc#+&8^e51srvli*s1ttjx_9p37g5h2mu@#!#=@#'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-y)f_qzm+a)qc#+&8^e51srvli*s1ttjx_9p37g5h2mu@#!#=@#',
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "True").lower() in ("1", "true", "yes")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.environ.get("ALLOWED_HOSTS", "").split(",")
+    if h.strip()
+]
+if not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+    if not DEBUG or os.environ.get("VERCEL"):
+        # Vercel serverless: allow any *.vercel.app by default; tighten via
+        # ALLOWED_HOSTS env var once the production domain is known.
+        ALLOWED_HOSTS.append(".vercel.app")
+
+_FRONTEND_URLS = [
+    u.strip().rstrip("/")
+    for u in os.environ.get("FRONTEND_URL", "").split(",")
+    if u.strip()
+]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    *_FRONTEND_URLS,
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS = list(_FRONTEND_URLS)
+
+# Trust Vercel's proxy so request.is_secure() / absolute URLs are correct.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 # httpOnly refresh-token cookie (docs/superpowers/specs/2026-10-29-cookie-auth-design.md).
 # Path scope covers /api/auth/ so login, refresh, and logout all receive it.
+# NOTE: split Vercel deployments are cross-site (app.vercel.app -> api.vercel.app),
+# so production needs SameSite=None + Secure or the browser will drop the cookie
+# and silent refresh will 401-loop. Local dev stays Lax (no HTTPS needed).
 REFRESH_COOKIE_NAME = "refresh_token"
 REFRESH_COOKIE_MAX_AGE = 86400  # 1d = refresh token lifetime
-REFRESH_COOKIE_SECURE = not DEBUG
-REFRESH_COOKIE_SAMESITE = "Lax"
+REFRESH_COOKIE_SECURE = os.environ.get("REFRESH_COOKIE_SECURE")
+if REFRESH_COOKIE_SECURE is None:
+    REFRESH_COOKIE_SECURE = not DEBUG
+else:
+    REFRESH_COOKIE_SECURE = REFRESH_COOKIE_SECURE.lower() in ("1", "true", "yes")
+REFRESH_COOKIE_SAMESITE = os.environ.get(
+    "REFRESH_COOKIE_SAMESITE", "None" if not DEBUG else "Lax"
+)
 REFRESH_COOKIE_PATH = "/api/auth/"
 
 
@@ -94,6 +140,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -189,8 +236,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
+# WhiteNoise serves static files on Vercel serverless (no separate CDN needed).
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 
 # Email
