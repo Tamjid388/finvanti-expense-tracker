@@ -1,6 +1,9 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 
+import { Link } from "react-router";
+import { Eye, EyeOff } from "lucide-react";
+
 import { ApiError } from "@/api/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -8,11 +11,13 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ROUTES } from "@/config/routes";
 import { APP_NAME } from "@/lib/constants";
 import { useRegister } from "../hooks/use-auth";
 
@@ -26,6 +31,8 @@ export function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmMismatch, setConfirmMismatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const register = useRegister();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -78,9 +85,11 @@ export function RegisterPage() {
               <Input
                 id="username"
                 autoComplete="username"
+                placeholder="Choose a username"
                 required
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
+                className="h-11 text-base md:h-12 md:text-base"
               />
             </div>
             <div className="grid gap-2">
@@ -93,39 +102,86 @@ export function RegisterPage() {
                 required
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
+                className="h-11 text-base md:h-12 md:text-base"
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  placeholder="Create a password"
+                  required
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  className="h-11 pr-10 text-base md:h-12 md:text-base"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute top-1/2 right-1 size-8 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-4" aria-hidden />
+                  ) : (
+                    <Eye className="size-4" aria-hidden />
+                  )}
+                </Button>
+              </div>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="confirm-password">Confirm password</Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                autoComplete="new-password"
-                required
-                aria-invalid={confirmMismatch}
-                value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="confirm-password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  placeholder="Repeat your password"
+                  required
+                  aria-invalid={confirmMismatch}
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  className="h-11 pr-10 text-base md:h-12 md:text-base"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showConfirmPassword}
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  className="absolute top-1/2 right-1 size-8 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="size-4" aria-hidden />
+                  ) : (
+                    <Eye className="size-4" aria-hidden />
+                  )}
+                </Button>
+              </div>
               {confirmMismatch ? (
                 <p className="text-sm text-destructive">Passwords do not match.</p>
               ) : null}
             </div>
-            <Button type="submit" disabled={register.isPending}>
+            <Button type="submit" size="lg" disabled={register.isPending}>
               {register.isPending ? "Creating account…" : "Create account"}
             </Button>
           </form>
         </CardContent>
+        <CardFooter className="text-sm text-muted-foreground">
+          <span>
+            Already have an account?&nbsp;
+            <Button variant="link" size="sm" className="h-auto p-0" asChild>
+              <Link to={ROUTES.login}>Sign in</Link>
+            </Button>
+          </span>
+        </CardFooter>
       </Card>
     </div>
   );

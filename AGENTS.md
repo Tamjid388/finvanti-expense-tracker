@@ -22,6 +22,8 @@ See `prd.md` (v1.0, 2026-10-20) for requirements, API surface (§7), data model 
 
 ## Skills
 
+Use only repo-pinned `gstack` skills in this project. Do NOT use globally installed superpowers (e.g. `.superpowers/`, `~/.codex/skills/superpowers`).
+
 Agent skills are pinned in `skills-lock.json` (currently `gstack` from `garrytan/gstack`).
 
 - `.agents/skills/gstack/` — canonical skill library for this repo.
