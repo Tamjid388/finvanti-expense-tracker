@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 
-import { ArrowLeftRight, ChartColumn, CircleUser, Ellipsis, LogOut, NotebookPen, Plus, Search, Tags, Target, User, LayoutDashboard } from "lucide-react";
+import { ArrowLeftRight, ChartColumn, CircleUser, Ellipsis, LogOut, NotebookPen, Search, Tags, Target, User, LayoutDashboard } from "lucide-react";
 import { Link, NavLink, Outlet, useLocation, useNavigate, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
@@ -206,7 +206,7 @@ function Topbar() {
   }
 
   return (
-    <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-10 hidden border-b bg-background/90 backdrop-blur md:block">
       <div className="flex flex-wrap items-center gap-2 px-4 py-2">
         <form
           onSubmit={submitSearch}
@@ -227,12 +227,6 @@ function Topbar() {
         </form>
 
         <div className="flex w-full flex-wrap items-center justify-center gap-1.5 sm:w-auto">
-          <Button size="lg" asChild>
-            <Link to={`${ROUTES.transactions}?new=1`}>
-              <Plus className="size-4" aria-hidden />
-              Add transaction
-            </Link>
-          </Button>
           <div className="hidden md:block">
             <AccountMenu />
           </div>
