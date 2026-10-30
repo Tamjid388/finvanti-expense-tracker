@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { FormDialog } from "@/components/shared/FormDialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { LoadingState } from "@/components/shared/LoadingState";
@@ -157,16 +158,24 @@ export function TransactionsPage() {
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold">Transactions</h1>
         </div>
-        <Button
-          onClick={() => (showForm && !editing ? setShowForm(false) : openCreate())}
-        >
+        <Button onClick={openCreate}>
           <Plus className="size-4" aria-hidden />
-          {showForm && !editing ? "Close form" : "Add transaction"}
+          Add transaction
         </Button>
       </header>
 
-      {showForm ? (
+      <FormDialog
+        open={showForm}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowForm(false);
+            setEditing(null);
+          }
+        }}
+        title={editing ? "Edit transaction" : "Add transaction"}
+      >
         <TransactionForm
+          key={editing?.id ?? "new"}
           categories={categories}
           initial={editing}
           pending={formPending}
@@ -198,7 +207,7 @@ export function TransactionsPage() {
             }
           }}
         />
-      ) : null}
+      </FormDialog>
 
       <Card>
         <CardContent className="grid gap-3 pt-6">
@@ -364,7 +373,7 @@ export function TransactionsPage() {
   function renderTable() {
     return (
       <>
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="hidden overflow-hidden rounded-xl border bg-card md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -412,6 +421,39 @@ export function TransactionsPage() {
               ))}
             </TableBody>
           </Table>
+        </div>
+        <div className="grid gap-3 md:hidden">
+          {rows.map((txn) => (
+            <div key={txn.id} className="grid gap-2 rounded-xl border bg-card p-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">{txn.date}</span>
+                <Badge variant={txn.type === "income" ? "secondary" : "outline"}>{txn.type}</Badge>
+                <span className={`ml-auto text-right font-medium ${txn.type === "income" ? "text-green-600" : "text-red-600"}`}>
+                  {txn.type === "income" ? "+" : "−"}
+                  <Money amount={txn.amount} />
+                </span>
+              </div>
+              <div className="flex items-baseline gap-2 text-sm">
+                <span className="min-w-0 max-w-[55%] truncate font-medium">{categoryName.get(txn.category) ?? `#${txn.category}`}</span>
+                <span className="min-w-0 flex-1 truncate text-muted-foreground">
+                  {txn.description || "—"}
+                </span>
+              </div>
+              <div className="flex justify-end gap-1">
+                <Button variant="ghost" size="icon" aria-label={`Edit transaction ${txn.id}`} onClick={() => openEdit(txn)}>
+                  <Pencil className="size-4" aria-hidden />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete transaction ${txn.id}`}
+                  onClick={() => setDeleting(txn)}
+                >
+                  <Trash2 className="size-4" aria-hidden />
+                </Button>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="flex items-center justify-between gap-2 text-sm text-muted-foreground">

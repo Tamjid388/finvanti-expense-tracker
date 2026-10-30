@@ -167,7 +167,8 @@ export function ReportsPage() {
                     description="Budget status appears here once you set a limit."
                   />
                 ) : (
-                  <div className="overflow-x-auto">
+                  <>
+                  <div className="hidden md:block">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -205,6 +206,37 @@ export function ReportsPage() {
                       </TableBody>
                     </Table>
                   </div>
+                  <div className="grid gap-3 md:hidden">
+                    {(budgetStatus.data ?? []).map((row) => (
+                      <div key={row.budget_id} className="grid gap-2 rounded-xl border bg-card p-4">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span className="min-w-0 flex-1 truncate font-medium">
+                            {row.category_id == null
+                              ? "Overall"
+                              : (categoryName.get(row.category_id) ?? `#${row.category_id}`)}
+                          </span>
+                          <Badge variant={row.is_over ? "destructive" : "outline"}>
+                            {row.is_over ? "Over" : "On track"}
+                          </Badge>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 text-sm">
+                          <div className="grid gap-0.5">
+                            <span className="text-xs text-muted-foreground">Limit</span>
+                            <Money amount={row.limit} />
+                          </div>
+                          <div className="grid gap-0.5 text-right">
+                            <span className="text-xs text-muted-foreground">Spent</span>
+                            <Money amount={row.spent} />
+                          </div>
+                          <div className={`grid gap-0.5 text-right ${row.is_over ? "font-medium text-red-600" : ""}`}>
+                            <span className="text-xs text-muted-foreground">Remaining</span>
+                            <Money amount={row.remaining} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  </>
                 )}
               </CardContent>
             </Card>

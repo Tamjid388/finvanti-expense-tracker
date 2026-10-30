@@ -3,7 +3,6 @@ import type { FormEvent } from "react";
 
 import { ApiError } from "@/api/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TypeSegmented } from "@/components/shared/TypeSegmented";
@@ -51,12 +50,7 @@ export function CategoryForm({
     (error && !(error instanceof ApiError) ? "Couldn't save the category. Please try again." : null);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{initial ? "Edit category" : "Add category"}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+    <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-2">
             <Label htmlFor="cat-name">Name</Label>
             <Input
@@ -88,8 +82,6 @@ export function CategoryForm({
               {pending ? "Saving…" : initial ? "Save changes" : "Create category"}
             </Button>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+    </form>
   );
 }

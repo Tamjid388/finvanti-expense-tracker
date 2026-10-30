@@ -6,6 +6,7 @@ import { ApiError } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { FormDialog } from "@/components/shared/FormDialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { LoadingState } from "@/components/shared/LoadingState";
@@ -78,13 +79,22 @@ export function NotesPage() {
           <h1 className="text-2xl font-semibold">Notes</h1>
           <p className="text-sm text-muted-foreground">Title required · description optional</p>
         </div>
-        <Button onClick={() => (showForm && !editing ? setShowForm(false) : openCreate())}>
+        <Button onClick={openCreate}>
           <Plus className="size-4" aria-hidden />
-          {showForm && !editing ? "Close form" : "New note"}
+          New note
         </Button>
       </header>
 
-      {showForm ? (
+      <FormDialog
+        open={showForm}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowForm(false);
+            setEditing(null);
+          }
+        }}
+        title={editing ? "Edit note" : "Add note"}
+      >
         <NoteForm
           key={editing?.id ?? "new"}
           initial={editing}
@@ -116,7 +126,7 @@ export function NotesPage() {
             }
           }}
         />
-      ) : null}
+      </FormDialog>
 
       {list.isPending ? (
         <LoadingState label="Loading notes…" />

@@ -3,7 +3,6 @@ import type { FormEvent } from "react";
 
 import { ApiError } from "@/api/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -80,12 +79,7 @@ export function BudgetForm({
     (error && !(error instanceof ApiError) ? "Couldn't save the budget. Please try again." : null);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{initial ? "Edit budget" : "Add budget"}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+    <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
               <Label htmlFor="budget-month">Month</Label>
@@ -152,8 +146,6 @@ export function BudgetForm({
               {pending ? "Saving…" : initial ? "Save changes" : "Create budget"}
             </Button>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+    </form>
   );
 }

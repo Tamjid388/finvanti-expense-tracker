@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { FormDialog } from "@/components/shared/FormDialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { LoadingState } from "@/components/shared/LoadingState";
@@ -93,14 +94,24 @@ export function BudgetsPage() {
       </header>
 
       <div className="flex flex-wrap items-center justify-end gap-3">
-        <Button onClick={() => (showForm && !editing ? setShowForm(false) : openCreate())}>
+        <Button onClick={openCreate}>
           <Plus className="size-4" aria-hidden />
-          {showForm && !editing ? "Close form" : "New budget"}
+          New budget
         </Button>
       </div>
 
-      {showForm ? (
+      <FormDialog
+        open={showForm}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowForm(false);
+            setEditing(null);
+          }
+        }}
+        title={editing ? "Edit budget" : "Add budget"}
+      >
         <BudgetForm
+          key={editing?.id ?? "new"}
           categories={categories}
           defaultMonth={month}
           initial={editing}
@@ -132,7 +143,7 @@ export function BudgetsPage() {
             }
           }}
         />
-      ) : null}
+      </FormDialog>
 
       {list.isPending ? (
         <LoadingState label="Loading budgets…" />

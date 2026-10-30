@@ -3,7 +3,6 @@ import type { FormEvent } from "react";
 
 import { ApiError } from "@/api/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -54,12 +53,7 @@ export function NoteForm({
     (error && !(error instanceof ApiError) ? "Couldn't save the note. Please try again." : null);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{initial ? "Edit note" : "Add note"}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+    <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-2">
             <Label htmlFor="note-title">Title</Label>
             <Input
@@ -104,8 +98,6 @@ export function NoteForm({
               {pending ? "Saving…" : initial ? "Save changes" : "Create note"}
             </Button>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+    </form>
   );
 }

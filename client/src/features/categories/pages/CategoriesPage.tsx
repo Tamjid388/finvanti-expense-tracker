@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { FormDialog } from "@/components/shared/FormDialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { LoadingState } from "@/components/shared/LoadingState";
@@ -159,14 +160,24 @@ export function CategoriesPage() {
             Type must match transaction type · duplicates blocked per user+type
           </p>
         </div>
-        <Button onClick={() => (showForm && !editing ? setShowForm(false) : openCreate())}>
+        <Button onClick={openCreate}>
           <Plus className="size-4" aria-hidden />
-          {showForm && !editing ? "Close form" : "New category"}
+          New category
         </Button>
       </header>
 
-      {showForm ? (
+      <FormDialog
+        open={showForm}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowForm(false);
+            setEditing(null);
+          }
+        }}
+        title={editing ? "Edit category" : "Add category"}
+      >
         <CategoryForm
+          key={editing?.id ?? "new"}
           initial={editing}
           pending={formPending}
           error={formError}
@@ -196,7 +207,7 @@ export function CategoriesPage() {
             }
           }}
         />
-      ) : null}
+      </FormDialog>
 
       <div className="flex flex-wrap items-center gap-3">
         <TypeSegmented

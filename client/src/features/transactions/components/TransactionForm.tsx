@@ -3,7 +3,6 @@ import type { FormEvent } from "react";
 
 import { ApiError } from "@/api/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -84,12 +83,7 @@ export function TransactionForm({
     (error && !(error instanceof ApiError) ? "Couldn't save the transaction. Please try again." : null);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{initial ? "Edit transaction" : "Add transaction"}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+    <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-2">
             <span className="text-sm font-medium">Type</span>
             <TypeSegmented
@@ -183,8 +177,6 @@ export function TransactionForm({
               {pending ? "Saving…" : initial ? "Save changes" : "Save transaction"}
             </Button>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+    </form>
   );
 }

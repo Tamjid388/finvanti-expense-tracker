@@ -2,8 +2,8 @@ import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 
-import { ArrowLeftRight, ChartColumn, CircleUser, LogOut, NotebookPen, Plus, Search, Tags, Target, User, LayoutDashboard } from "lucide-react";
-import { Link, NavLink, Outlet, useNavigate, useSearchParams } from "react-router";
+import { ArrowLeftRight, ChartColumn, CircleUser, Ellipsis, LogOut, NotebookPen, Plus, Search, Tags, Target, User, LayoutDashboard } from "lucide-react";
+import { Link, NavLink, Outlet, useLocation, useNavigate, useSearchParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -140,7 +140,15 @@ function OverallBudgetCard({ month, label }: { month: string; label: string }) {
   );
 }
 
-function AccountMenu() {
+function AccountMenu({
+  avatarClassName,
+  triggerClassName,
+  fallbackIconClassName,
+}: {
+  avatarClassName?: string;
+  triggerClassName?: string;
+  fallbackIconClassName?: string;
+}) {
   const me = useMe();
   const logout = useLogout();
   const initial = (me.data?.username || me.data?.email || "?").slice(0, 1).toUpperCase();
@@ -148,16 +156,19 @@ function AccountMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Account menu">
+        <Button variant="ghost" size="icon" aria-label="Account menu" className={triggerClassName}>
           {me.data ? (
             <span
-              className="flex size-6 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
+              className={cn(
+                "flex size-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground",
+                avatarClassName,
+              )}
               aria-hidden
             >
               {initial}
             </span>
           ) : (
-            <CircleUser className="size-5" aria-hidden />
+            <CircleUser className={cn("size-5", fallbackIconClassName)} aria-hidden />
           )}
         </Button>
       </DropdownMenuTrigger>
@@ -197,7 +208,11 @@ function Topbar() {
   return (
     <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
       <div className="flex flex-wrap items-center gap-2 px-4 py-2">
-        <form onSubmit={submitSearch} role="search" className="relative min-w-40 flex-1">
+        <form
+          onSubmit={submitSearch}
+          role="search"
+          className="relative hidden min-w-40 flex-1 md:block"
+        >
           <Search
             className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
             aria-hidden
@@ -218,7 +233,9 @@ function Topbar() {
               Add transaction
             </Link>
           </Button>
-          <AccountMenu />
+          <div className="hidden md:block">
+            <AccountMenu />
+          </div>
         </div>
       </div>
     </header>
@@ -227,38 +244,137 @@ function Topbar() {
 
 /** Wireframe mobile `tabbar` (docs/wireframes/mobile): fixed bottom tab nav
  * so primary navigation stays reachable on small screens without
- * horizontal scrolling. */
+ * horizontal scrolling. Five slots: Home, Categories, center Transactions
+ * FAB, Budgets, and a More menu (Reports/Notes/Profile). */
+function MobileSideTab({
+  to,
+  label,
+  icon: Icon,
+  end,
+}: {
+  to: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  end?: boolean;
+}) {
+  return (
+    <NavLink
+      to={to}
+      end={end}
+      className={({ isActive }) =>
+        cn(
+          "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2 text-[10px] font-medium outline-none",
+          isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+        )
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <Icon className="size-5" aria-hidden />
+          <span className="truncate">{label}</span>
+          <span
+            aria-hidden
+            className={cn("size-1 rounded-full", isActive ? "bg-primary" : "bg-transparent")}
+          />
+        </>
+      )}
+    </NavLink>
+  );
+}
+
+/** Overflow destinations behind the More button (icons mirror NAV_ITEMS). */
+const MORE_ITEMS: ReadonlyArray<{
+  to: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+}> = [
+  { to: ROUTES.reports, label: "Reports", icon: ChartColumn },
+  { to: ROUTES.notes, label: "Notes", icon: NotebookPen },
+  { to: ROUTES.profile, label: "Profile", icon: User },
+];
+
 function MobileTabBar() {
+  const { pathname } = useLocation();
+  const moreActive = MORE_ITEMS.some(
+    (item) => pathname === item.to || pathname.startsWith(`${item.to}/`),
+  );
+
   return (
     <nav
       aria-label="Primary — mobile"
       className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
       <div className="mx-auto flex max-w-md items-stretch">
-        {NAV_ITEMS.map(({ to, short, icon: Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={to === ROUTES.dashboard}
-            className={({ isActive }) =>
-              cn(
-                "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2 text-[10px] font-medium outline-none",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
-              )
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Icon className="size-5" aria-hidden />
-                <span className="truncate">{short}</span>
-                <span
-                  aria-hidden
-                  className={cn("size-1 rounded-full", isActive ? "bg-primary" : "bg-transparent")}
-                />
-              </>
-            )}
-          </NavLink>
-        ))}
+        <MobileSideTab to={ROUTES.dashboard} label="Home" icon={LayoutDashboard} end />
+        <MobileSideTab to={ROUTES.categories} label="Categories" icon={Tags} />
+        <NavLink
+          to={ROUTES.transactions}
+          aria-label="Transactions"
+          className="flex min-w-0 flex-1 flex-col items-center px-1 pt-2 pb-2 outline-none"
+        >
+          {({ isActive }) => (
+            <>
+              <span
+                className={cn(
+                  "flex size-14 -translate-y-4 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg",
+                  isActive && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                )}
+              >
+                <ArrowLeftRight className="size-6" aria-hidden />
+              </span>
+              <span
+                aria-hidden
+                className={cn(
+                  "-mt-2.5 size-1 rounded-full",
+                  isActive ? "bg-primary" : "bg-transparent",
+                )}
+              />
+            </>
+          )}
+        </NavLink>
+        <MobileSideTab to={ROUTES.budgets} label="Budgets" icon={Target} />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label="More navigation options"
+              className={cn(
+                "flex min-w-0 flex-1 cursor-pointer flex-col items-center gap-0.5 px-1 py-2 text-[10px] font-medium outline-none",
+                moreActive
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Ellipsis className="size-5" aria-hidden />
+              <span className="truncate">More</span>
+              <span
+                aria-hidden
+                className={cn(
+                  "size-1 rounded-full",
+                  moreActive ? "bg-primary" : "bg-transparent",
+                )}
+              />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align="end">
+            {MORE_ITEMS.map(({ to, label, icon: Icon }) => (
+              <DropdownMenuItem key={to} asChild>
+                <NavLink
+                  to={to}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex w-full items-center gap-2",
+                      isActive ? "text-primary" : undefined,
+                    )
+                  }
+                >
+                  <Icon className="size-4" aria-hidden />
+                  <span className="flex-1">{label}</span>
+                </NavLink>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </nav>
   );
@@ -319,9 +435,16 @@ export function AppShell() {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex h-14 items-center gap-2 border-b border-white/10 bg-[#0f172a] px-4 text-white md:hidden">
-            <img src="/favicon.svg" alt="" className="size-6 rounded-md" aria-hidden />
-            <span className="text-sm font-semibold">{APP_NAME}</span>
+          <div className="flex h-14 items-center justify-between gap-2 border-b border-white/10 bg-[#0f172a] px-4 text-white md:hidden">
+            <div className="flex min-w-0 items-center gap-2">
+              <img src="/favicon.svg" alt="" className="size-6 rounded-md" aria-hidden />
+              <span className="truncate text-sm font-semibold">{APP_NAME}</span>
+            </div>
+            <AccountMenu
+              avatarClassName="size-10 text-base"
+              triggerClassName="size-11 text-white hover:bg-white/10 hover:text-white"
+              fallbackIconClassName="size-7"
+            />
           </div>
           <Topbar />
           <main id="main" className="min-w-0 flex-1 bg-[#f4f5f7] p-4 pb-28 md:p-6 dark:bg-background">
