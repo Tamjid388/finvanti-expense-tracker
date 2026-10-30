@@ -75,8 +75,8 @@ export function DashboardPage() {
         overCount={overCount}
         nearCount={nearCount}
       />
-      <header className="hidden flex-wrap items-center justify-between gap-3 md:flex">
-        <div className="space-y-1">
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <div className="hidden space-y-1 md:block">
           <h1 className="text-2xl font-semibold">
             {greeting()}, {name} 👋
           </h1>

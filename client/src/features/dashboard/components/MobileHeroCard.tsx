@@ -29,7 +29,7 @@ export function MobileHeroCard({
       aria-label="Monthly overview"
       className="overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-600 to-violet-600 p-5 text-white shadow-lg md:hidden"
     >
-      <p className="text-sm text-indigo-100">
+      <p className="truncate text-sm text-indigo-100">
         {greeting}, {name} 👋
       </p>
       <p className="mt-0.5 text-xs text-indigo-200">{monthLabel} overview</p>
