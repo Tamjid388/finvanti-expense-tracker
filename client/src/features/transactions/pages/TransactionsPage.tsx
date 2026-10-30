@@ -210,22 +210,22 @@ export function TransactionsPage() {
       </FormDialog>
 
       <Card>
-        <CardContent className="grid gap-3 pt-6">
-          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-            <div className="flex flex-wrap items-center gap-3">
-              <TypeSegmented
-                value={type}
-                onChange={(next) => {
-                  setType(next);
-                  setPage(1);
-                }}
-                showAll
-                onSelectAll={() => {
-                  setType(null);
-                  setPage(1);
-                }}
-              />
-              <div className="grid gap-1">
+        <CardContent className="grid gap-2 pt-6">
+          <div className="grid gap-2">
+            <TypeSegmented
+              value={type}
+              onChange={(next) => {
+                setType(next);
+                setPage(1);
+              }}
+              showAll
+              onSelectAll={() => {
+                setType(null);
+                setPage(1);
+              }}
+            />
+            <div className="grid grid-cols-2 items-end gap-2 md:flex md:flex-wrap">
+              <div className="col-span-2 grid min-w-0 gap-1">
                 <Label htmlFor="f-category" className="sr-only">
                   Filter by category
                 </Label>
@@ -236,7 +236,7 @@ export function TransactionsPage() {
                     setPage(1);
                   }}
                 >
-                  <SelectTrigger id="f-category" className="w-48" aria-label="Filter by category">
+                  <SelectTrigger id="f-category" className="w-full md:w-48" aria-label="Filter by category">
                     <SelectValue placeholder="All categories" />
                   </SelectTrigger>
                   <SelectContent>
@@ -249,10 +249,8 @@ export function TransactionsPage() {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
 
-            <div className="flex flex-wrap items-end gap-3">
-              <div className="grid gap-1">
+              <div className="grid min-w-0 gap-1">
                 <Label htmlFor="f-start">Start date</Label>
                 <Input
                   id="f-start"
@@ -264,10 +262,7 @@ export function TransactionsPage() {
                   }}
                 />
               </div>
-              <span className="pb-2 text-muted-foreground" aria-hidden>
-                →
-              </span>
-              <div className="grid gap-1">
+              <div className="grid min-w-0 gap-1">
                 <Label htmlFor="f-end">End date</Label>
                 <Input
                   id="f-end"
@@ -281,11 +276,13 @@ export function TransactionsPage() {
               </div>
               <Button
                 variant="outline"
+                size="icon"
                 onClick={resetFilters}
                 title="Clear all filters"
+                aria-label="Reset filters"
+                className="col-span-2 justify-self-end"
               >
                 <RotateCcw className="size-4" aria-hidden />
-                Reset
               </Button>
             </div>
           </div>
