@@ -20,6 +20,7 @@ import { useTransactions } from "@/features/transactions/hooks/use-transactions"
 import { useCategories } from "@/features/categories/hooks/use-categories";
 
 import { SummaryCards } from "../components/SummaryCards";
+import { MobileHeroCard } from "../components/MobileHeroCard";
 
 function friendlyError(error: unknown): string {
   if (error instanceof ApiError) {
@@ -65,7 +66,16 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-3">
+      <MobileHeroCard
+        greeting={greeting()}
+        name={name}
+        monthLabel={label}
+        summary={summary.data}
+        isPending={summary.isPending}
+        overCount={overCount}
+        nearCount={nearCount}
+      />
+      <header className="hidden flex-wrap items-center justify-between gap-3 md:flex">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold">
             {greeting()}, {name} 👋
