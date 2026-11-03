@@ -12,6 +12,10 @@ export interface TokenPair {
   access: string;
 }
 
+export interface GoogleLoginPayload {
+  id_token: string;
+}
+
 export type LoginResponse = components["schemas"]["AccessResponse"];
 export type TokenRefreshResponse = components["schemas"]["AccessResponse"];
 export type RegisterPayload = Omit<components["schemas"]["Register"], "id">;

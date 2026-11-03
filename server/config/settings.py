@@ -101,7 +101,7 @@ if not DEBUG:
 # so production needs SameSite=None + Secure or the browser will drop the cookie
 # and silent refresh will 401-loop. Local dev stays Lax (no HTTPS needed).
 REFRESH_COOKIE_NAME = "refresh_token"
-REFRESH_COOKIE_MAX_AGE = 86400  # 1d = refresh token lifetime
+REFRESH_COOKIE_MAX_AGE = 2592000  # 30d = refresh token lifetime
 REFRESH_COOKIE_SECURE = os.environ.get("REFRESH_COOKIE_SECURE")
 if REFRESH_COOKIE_SECURE is None:
     REFRESH_COOKIE_SECURE = not DEBUG
@@ -274,8 +274,10 @@ SPECTACULAR_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")

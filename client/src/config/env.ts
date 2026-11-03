@@ -10,4 +10,7 @@ const API_BASE_URL = import.meta.env.DEV
   ? ""
   : (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000");
 
-export { API_BASE_URL };
+/** Google OAuth Web Client ID for GIS button (empty = not configured). */
+const GOOGLE_CLIENT_ID = (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined) ?? "";
+
+export { API_BASE_URL, GOOGLE_CLIENT_ID };

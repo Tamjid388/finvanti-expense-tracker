@@ -8,13 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ErrorState } from "@/components/shared/ErrorState";
-import { useLogout, useMe } from "@/features/auth/hooks/use-auth";
+import { useGoogleLink, useLogout, useMe } from "@/features/auth/hooks/use-auth";
 
 /** Wireframe profile screen: account card + sessions & security card. */
 export function ProfilePage() {
   const me = useMe();
   const logout = useLogout();
+  const googleLink = useGoogleLink();
 
   return (
     <div className="space-y-6">
@@ -74,6 +76,44 @@ export function ProfilePage() {
             <CardTitle className="text-base">Sessions &amp; security</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-3">
+            <div className="grid gap-2 rounded-lg border px-3 py-2">
+              <div className="text-sm">
+                <p className="font-medium">Link Gmail account</p>
+                <p className="text-xs text-muted-foreground">
+                  Connect Google so you can sign in with Google next time.
+                </p>
+              </div>
+              {googleLink.isError ? (
+                <Alert variant="destructive">
+                  <AlertTitle>Linking failed</AlertTitle>
+                  <AlertDescription>
+                    {googleLink.error instanceof ApiError
+                      ? googleLink.error.message
+                      : googleLink.error instanceof Error
+                        ? googleLink.error.message
+                        : "Couldn't link your Gmail account — try again."}
+                  </AlertDescription>
+                </Alert>
+              ) : null}
+              {googleLink.isSuccess ? (
+                <p role="status" className="text-sm text-green-600">
+                  Gmail account linked — you can now sign in with Google.
+                </p>
+              ) : null}
+              <div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={googleLink.isPending}
+                  onClick={() => googleLink.mutate()}
+                >
+                  {googleLink.isPending ? "Connecting…" : "Connect Google"}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Disconnect coming soon — linking is permanent in v1.
+              </p>
+            </div>
             <div className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2">
               <div className="text-sm">
                 <p className="font-medium">This device</p>

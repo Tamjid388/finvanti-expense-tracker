@@ -159,3 +159,72 @@ class MeLogoutTests(APITestCase):
         out = self.client.post("/api/auth/logout/", {}, format="json")
         self.assertEqual(out.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(out.cookies["refresh_token"].value, "")
+
+
+class GoogleAuthTests(APITestCase):
+    def setUp(self):
+        from django.contrib.auth.models import User
+        self.password_user = User.objects.create_user(
+            username="pwuser",
+            email="pw@example.com",
+            password="StrongPass123",
+        )
+        self.other = User.objects.create_user(
+            username="otherg",
+            email="other@example.com",
+            password="StrongPass123",
+        )
+
+    def test_verify_rejects_forged_token(self):
+        from users.google import verify_google_id_token
+        with self.assertRaises(Exception):
+            verify_google_id_token("forged.token.here")
+
+    def test_google_sub_unique_across_users(self):
+        from django.db import IntegrityError
+        from users.models import GoogleAccount
+        GoogleAccount.objects.create(user=self.password_user, sub="sub-123", email="a@x.com")
+        with self.assertRaises(IntegrityError):
+            GoogleAccount.objects.create(user=self.other, sub="sub-123", email="b@x.com")
+
+    def test_google_login_creates_user_and_sets_cookie(self):
+        from unittest.mock import patch
+        with patch("users.views.verify_google_id_token", return_value={"sub": "sub-new", "email": "new@gmail.com", "email_verified": True}):
+            res = self.client.post("/api/auth/google/", {"id_token": "t"}, format="json")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn("access", res.data)
+        self.assertNotIn("refresh", res.data)
+        self.assertIn("refresh_token", res.cookies)
+
+    def test_google_login_existing_password_email_409(self):
+        from unittest.mock import patch
+        with patch("users.views.verify_google_id_token", return_value={"sub": "sub-x", "email": "PW@example.com", "email_verified": True}):
+            res = self.client.post("/api/auth/google/", {"id_token": "t"}, format="json")
+        self.assertEqual(res.status_code, 409)
+
+    def test_google_link_then_login(self):
+        from unittest.mock import patch
+        # login as password user to get auth header
+        login = self.client.post("/api/auth/login/", {"email": "pw@example.com", "password": "StrongPass123"}, format="json")
+        self.assertEqual(login.status_code, 200)
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {login.data['access']}")
+        with patch("users.views.verify_google_id_token", return_value={"sub": "sub-pw-1", "email": "pw@example.com", "email_verified": True}):
+            link = self.client.post("/api/auth/google/link/", {"id_token": "t"}, format="json")
+        self.assertEqual(link.status_code, 200)
+        # logout-ish: clear creds, then google login should succeed
+        self.client.credentials()
+        self.client.cookies.clear()
+        with patch("users.views.verify_google_id_token", return_value={"sub": "sub-pw-1", "email": "pw@example.com", "email_verified": True}):
+            res = self.client.post("/api/auth/google/", {"id_token": "t"}, format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("access", res.data)
+
+    def test_google_link_sub_already_linked_to_other_409(self):
+        from unittest.mock import patch
+        from users.models import GoogleAccount
+        GoogleAccount.objects.create(user=self.other, sub="sub-taken", email="other@example.com")
+        login = self.client.post("/api/auth/login/", {"email": "pw@example.com", "password": "StrongPass123"}, format="json")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {login.data['access']}")
+        with patch("users.views.verify_google_id_token", return_value={"sub": "sub-taken", "email": "pw@example.com", "email_verified": True}):
+            link = self.client.post("/api/auth/google/link/", {"id_token": "t"}, format="json")
+        self.assertEqual(link.status_code, 409)

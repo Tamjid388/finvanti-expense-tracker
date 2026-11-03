@@ -17,6 +17,8 @@ let bootRefresh: Promise<boolean> | null = null;
 export const authApi = {
   register: (payload: RegisterPayload) => api.post<RegisterResponse>(`${BASE}/register/`, payload),
   login: (payload: LoginPayload) => api.post<LoginResponse>(`${BASE}/login/`, payload),
+  googleLogin: (id_token: string) => api.post<LoginResponse>(`${BASE}/google/`, { id_token }),
+  googleLink: (id_token: string) => api.post<User>(`${BASE}/google/link/`, { id_token }),
   // Refresh cookie is cleared server-side; nothing secret to send.
   logout: () => api.post<void>(`${BASE}/logout/`, {}),
   me: () => api.get<User>(`${BASE}/me/`),

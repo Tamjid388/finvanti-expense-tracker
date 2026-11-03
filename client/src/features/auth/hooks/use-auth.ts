@@ -5,6 +5,7 @@ import { authApi } from "@/api/auth";
 import { qk } from "@/api/query-keys";
 import { ROUTES } from "@/config/routes";
 import { clearSession, setUser, setTokens } from "../session";
+import { requestGoogleIdToken } from "../lib/google-identity";
 import { toast } from "@/components/shared/Toaster";
 import type { LoginPayload, RegisterPayload } from "@/types/api";
 
@@ -38,7 +39,7 @@ export function useLogin() {
       const from = (location.state as { from?: { pathname?: string } } | null)?.from;
       const target =
         from?.pathname && from.pathname !== ROUTES.login ? from.pathname : ROUTES.dashboard;
-      toast("Logged in — access 15m, refresh rotates");
+      toast("Logged in — access 30m, refresh 30d");
       navigate(target, { replace: true });
     },
   });
@@ -51,6 +52,44 @@ export function useRegister() {
   return useMutation({
     mutationFn: (payload: RegisterPayload) => authApi.register(payload),
     onSuccess: () => navigate(ROUTES.login, { replace: true }),
+  });
+}
+
+/** Google login → GIS ID token → same session shape as password login. */
+export function useGoogleLogin() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  return useMutation({
+    mutationFn: async () => {
+      const id_token = await requestGoogleIdToken();
+      const tokens = await authApi.googleLogin(id_token);
+      setTokens(tokens);
+    },
+    onSuccess: () => {
+      const from = (location.state as { from?: { pathname?: string } } | null)?.from;
+      const target =
+        from?.pathname && from.pathname !== ROUTES.login ? from.pathname : ROUTES.dashboard;
+      toast("Signed in with Google — access 30m, refresh 30d");
+      navigate(target, { replace: true });
+    },
+  });
+}
+
+/** Link current user to a Google account from Profile. */
+export function useGoogleLink() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const id_token = await requestGoogleIdToken();
+      return authApi.googleLink(id_token);
+    },
+    onSuccess: (user) => {
+      setUser(user);
+      void qc.invalidateQueries({ queryKey: qk.me() });
+      toast("Gmail account linked — you can now sign in with Google");
+    },
   });
 }
 

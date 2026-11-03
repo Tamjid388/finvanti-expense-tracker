@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ROUTES } from "@/config/routes";
 import { APP_NAME } from "@/lib/constants";
-import { useLogin } from "../hooks/use-auth";
+import { useGoogleLogin, useLogin } from "../hooks/use-auth";
 
 /**
  * Dummy demo account for one-click local sign-in.
@@ -39,6 +39,7 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const login = useLogin();
+  const googleLogin = useGoogleLogin();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,15 +55,22 @@ export function LoginPage() {
     login.mutate(DEMO_ACCOUNT);
   };
 
-  const apiError = login.error instanceof ApiError ? login.error : null;
+  const apiError =
+    googleLogin.error instanceof ApiError ? googleLogin.error : login.error instanceof ApiError ? login.error : null;
   const isConnectionError = apiError?.status === 0;
+  const isPasswordExists409 =
+    apiError?.status === 409 && /already exists/i.test(apiError.message);
   const message = !apiError
     ? "Sign in failed — please try again."
     : isConnectionError
       ? apiError.message
-      : apiError.status === 400 || apiError.status === 401
-        ? "Incorrect email or password. Please try again."
-        : apiError.message;
+      : isPasswordExists409
+        ? "An account with this email already exists — sign in with password first, then link Gmail in Profile."
+        : apiError.status === 400 || apiError.status === 401
+          ? "Incorrect email or password. Please try again."
+          : apiError.message;
+
+  const googleError = googleLogin.error instanceof Error ? googleLogin.error : null;
 
   return (
     <div className="auth-backdrop flex min-h-dvh flex-col p-4">
@@ -72,7 +80,29 @@ export function LoginPage() {
           <CardDescription>Track income, expenses, budgets and reports.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          {login.isError ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            disabled={googleLogin.isPending || login.isPending}
+            onClick={() => googleLogin.mutate()}
+            aria-label="Continue with Google"
+          >
+            <svg className="size-4" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M21.35 11.1H12v2.9h5.35c-.5 2.4-2.55 3.5-5.35 3.5a5.9 5.9 0 0 1 0-11.8c1.5 0 2.85.55 3.9 1.45l2.1-2.1A8.9 8.9 0 0 0 12 2a8.9 8.9 0 0 0 0 17.8c4.6 0 7.65-3.2 7.65-7.7 0-.35-.05-.7-.1-1z"
+              />
+            </svg>
+            {googleLogin.isPending ? "Connecting to Google…" : "Continue with Google"}
+          </Button>
+          {googleLogin.isError && !login.isError ? (
+            <Alert variant="destructive">
+              <AlertTitle>Google sign-in failed</AlertTitle>
+              <AlertDescription>{googleError?.message ?? message}</AlertDescription>
+            </Alert>
+          ) : null}
+          {login.isError || (googleLogin.isError && login.isError) ? (
             <Alert variant="destructive">
               <AlertTitle>Sign in failed</AlertTitle>
               <AlertDescription>

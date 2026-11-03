@@ -3,6 +3,65 @@ info:
   title: Expense Tracker API
   version: 1.0.0
 paths:
+  /api/auth/google/:
+    post:
+      operationId: auth_google_create
+      description: Verify a Google ID token server-side and issue the same access
+        + httpOnly refresh-cookie pair. Existing password-only email gets 409 password_account_exists.
+      summary: Google login
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleAuth'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GoogleAuth'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GoogleAuth'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessResponse'
+          description: ''
+  /api/auth/google/link/:
+    post:
+      operationId: auth_google_link_create
+      description: Link the authenticated user to a Google account. Verifies the ID
+        token server-side; rejects subs linked to other users.
+      summary: Link Google
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleAuth'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GoogleAuth'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GoogleAuth'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
   /api/auth/login/:
     post:
       operationId: auth_login_create
@@ -34,7 +93,7 @@ paths:
     post:
       operationId: auth_logout_create
       description: Blacklist the refresh token (cookie or body) and clear the refresh
-        cookie. The access token expires on its own (15m).
+        cookie. The access token expires on its own (30m).
       summary: Logout
       tags:
       - auth
@@ -1015,6 +1074,14 @@ components:
       required:
       - email
       - password
+    GoogleAuth:
+      type: object
+      properties:
+        id_token:
+          type: string
+          writeOnly: true
+      required:
+      - id_token
     MonthlySummary:
       type: object
       description: Response shape preview for OpenAPI only (not used for I/O).

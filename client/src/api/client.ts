@@ -37,9 +37,9 @@ export const http: AxiosInstance = axios.create({
 
 const REFRESH_PATH = "/api/auth/token/refresh/";
 const RETRY_FLAG = "__isRetry";
-// Login/register 401s (e.g. wrong password) must surface to the form — never
-// trigger a silent refresh + login redirect, which would swallow the error.
-const NO_AUTO_REFRESH_PATHS = ["/api/auth/login/", "/api/auth/register/"];
+// Login/register/google 401s/409s (e.g. wrong password, password-account-exists)
+// must surface to the form — never trigger a silent refresh + login redirect.
+const NO_AUTO_REFRESH_PATHS = ["/api/auth/login/", "/api/auth/register/", "/api/auth/google/"];
 
 /** Single-flight refresh: parallel 401s share one refresh POST. */
 let refreshPromise: Promise<boolean> | null = null;
